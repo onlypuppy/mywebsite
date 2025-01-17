@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Background video */
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2; /* Ensure background video stays behind everything else */
+        }
+
+        /* Centered profile box */
+        .profile-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 1;
+            pointer-events: none; /* Allow mouse events to pass through to the video */
+        }
+
+        .profile-box {
+            display: inline-block;
+            padding: 20px;
+            background: rgba(180, 180, 180, 0.5); /* Semi-transparent background */
+            border-radius: 15px;
+            transition: transform 0.2s ease-out;
+            pointer-events: auto; /* Enable mouse events on the profile box */
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 3px solid #8B0000;
+        }
+
+        .username {
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .roblox-link img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .roblox-link img:hover {
+            transform: scale(1.1);
+        }
+
+        .tip-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FF0000;
+            margin-top: 10px;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 1s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Background video -->
+    <video class="background-video" autoplay loop muted>
+        <source src="https://cdn.pixabay.com/video/2021/10/10/91562-629172467_large.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Hidden SoundCloud Audio Player that auto loops -->
+    <iframe width="0" height="0" scrolling="no" frameborder="no" allow="autoplay" 
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/543819201&color=%23ff5500&auto_play=true&loop=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false"></iframe>
+
+    <!-- Profile Section -->
+    <div class="profile-container">
+        <div class="profile-box" id="profile-box">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYAdzCIM6i3F3FOqMJn_FXoVcnBa5uAyO8AA&s" alt="Profile Picture" class="profile-pic">
+            <div class="username">chadleythecat</div>
+            <div class="roblox-link">
+                <a href="https://www.roblox.com/users/your-roblox-id/profile" target="_blank">
+                    <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWlxY3h6b3h0eWtqZDRvd25uZm8xaTN6dzBncWRsdjNsanc0NTRraCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/1QcqLUCuQca1edQ0rK/giphy.gif" alt="Roblox Profile Link">
+                </a>
+            </div>
+            <!-- TIP TEXT -->
+            <div class="tip-text" id="tip-text">TIP: YOU DON'T HAVE MORE THAN ONE LIFE, SO DON'T DIE</div>
+        </div>
+    </div>
+
+    <script>
+        const profileBox = document.getElementById('profile-box');
+        const tipText = document.getElementById('tip-text');
+        let isHovered = false;
+
+        // Track mouse hover state
+        profileBox.addEventListener('mouseenter', () => {
+            isHovered = true;
+        });
+
+        profileBox.addEventListener('mouseleave', () => {
+            isHovered = false;
+            profileBox.style.transform = 'rotateX(0deg) rotateY(0deg)'; // Reset the tilt when not hovered
+        });
+
+        // Tilt the box based on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            if (isHovered) {
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                const boxCenterX = profileBox.getBoundingClientRect().left + profileBox.offsetWidth / 2;
+                const boxCenterY = profileBox.getBoundingClientRect().top + profileBox.offsetHeight / 2;
+
+                // Calculate the mouse movement relative to the center of the box
+                const deltaX = (mouseX - boxCenterX) / 16; // Reduce the effect for smoother movement
+                const deltaY = (mouseY - boxCenterY) / 16; // Reduce the effect for smoother movement
+
+                // Apply tilt effect based on mouse movement
+                profileBox.style.transform = `rotateX(${deltaY}deg) rotateY(${deltaX}deg)`;
+            }
+        });
+
+        // Text change logic with a loop
+        function changeText() {
+            setTimeout(() => {
+                tipText.style.opacity = 1; // Show the first text
+                tipText.textContent = "TIP: YOU DON'T HAVE MORE THAN ONE LIFE, SO DON'T DIE";
+            }, 0); // Display immediately
+
+            setTimeout(() => {
+                tipText.style.opacity = 0; // Hide the text after 6.5 seconds
+            }, 6500);
+
+            setTimeout(() => {
+                tipText.style.opacity = 1; // Show second text after it hides
+                tipText.textContent = "TIP: THIS ISN'T A LOADING SCREEN";
+            }, 13000); // Show second text after first hides
+
+            setTimeout(() => {
+                tipText.style.opacity = 0; // Hide second text after 6.5 seconds
+            }, 19500);
+
+            setTimeout(() => {
+                tipText.style.opacity = 1; // Show third text after it hides
+                tipText.textContent = "TIP: I KNOW WHERE YOU LIVE";
+            }, 26000); // Show third text after second hides
+
+            setTimeout(() => {
+                tipText.style.opacity = 0; // Hide third text after 6.5 seconds
+            }, 32500);
+
+            setTimeout(() => {
+                tipText.style.opacity = 1; // Show fourth text after it hides
+                tipText.textContent = "TIP: WRITE THAT DOWN, WRITE THAT DOWN";
+            }, 39000); // Show fourth text after third hides
+
+            setTimeout(() => {
+                tipText.style.opacity = 0; // Hide fourth text after 6.5 seconds
+            }, 45500);
+
+            setTimeout(() => {
+                changeText(); // Restart the text change loop
+            }, 45500); // Reset the loop after all tips are shown
+        }
+
+        // Start the text change loop when the page loads
+        changeText();
+    </script>
+</body>
+</html>
