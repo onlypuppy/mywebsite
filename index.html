@@ -96,6 +96,11 @@
             text-align: center;
         }
 
+        .roblox-link {
+            position: relative;
+            display: inline-block;
+        }
+
         .roblox-link img {
             width: 50px;
             height: 50px;
@@ -110,10 +115,11 @@
         .tip-text {
             font-size: 20px;
             font-weight: bold;
-            color: #FF0000;
+            color: #000000;
             margin-top: 10px;
             opacity: 0;
             transition: opacity 1s ease-in-out;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
         }
     </style>
 </head>
@@ -193,8 +199,23 @@
             }, 45500);
 
             setTimeout(() => {
+                tipText.style.opacity = 1;
+                tipText.textContent = "TIP: I WAS DEBUGGING AUDIO FOR 4 HOURS AND IT STILL DIDN'T WORK";
+            }, 52000);
+
+
+    setTimeout(() => {
+                tipText.style.opacity = 1;
+                tipText.textContent = "TIP: E";
+            }, 58500);
+
+            setTimeout(() => {
+                tipText.style.opacity = 0;
+            }, 65000);
+
+            setTimeout(() => {
                 changeText();
-            }, 45500);
+            }, 65000);
         }
     </script>
 </body>
