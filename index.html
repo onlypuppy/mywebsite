@@ -85,13 +85,14 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 20px;
-            border: 3px solid #8B0000;
+            box-shadow: 0 0 15px 10px #4B0082, 0 0 0 2px #4B0082; /* stronger purple glow with 2px purple border */
         }
 
         .username {
             font-size: 36px;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            color: #4B0082; /* stronger purple */
+            text-shadow: 0 0 15px rgba(128, 0, 128, 0.8); /* more intense purple glow */
             margin-bottom: 10px;
             text-align: center;
         }
@@ -115,11 +116,11 @@
         .tip-text {
             font-size: 20px;
             font-weight: bold;
-            color: #000000;
+            color: #4B0082; /* stronger purple */
             margin-top: 10px;
             opacity: 0;
             transition: opacity 1s ease-in-out;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 0 15px rgba(128, 0, 128, 0.8); /* more intense purple glow */
         }
     </style>
 </head>
@@ -203,8 +204,7 @@
                 tipText.textContent = "TIP: I WAS DEBUGGING AUDIO FOR 4 HOURS AND IT STILL DIDN'T WORK";
             }, 52000);
 
-
-    setTimeout(() => {
+            setTimeout(() => {
                 tipText.style.opacity = 1;
                 tipText.textContent = "TIP: E";
             }, 58500);
