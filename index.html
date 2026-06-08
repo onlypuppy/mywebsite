@@ -1,9 +1,11 @@
+<!-- START OF FILE 1.2.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Final Project</title>
+    <title>Concept Album Requirements</title>
     <style>
         /* Base page styling */
         body {
@@ -16,13 +18,12 @@
             overflow: hidden;
             position: relative;
 
-            /* --- NEW DYNAMIC BACKGROUND --- */
+            /* Dynamic Background */
             background: linear-gradient(-45deg, #141e30, #243b55, #2c3e50, #0f2027);
             background-size: 400% 400%;
             animation: gradientBg 18s ease infinite;
         }
 
-        /* Subtle grid pattern overlay for the background */
         body::before {
             content: "";
             position: absolute;
@@ -31,42 +32,35 @@
                 linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
             background-size: 35px 35px;
-            z-index: -1; /* Keeps it strictly behind the notebook */
+            z-index: -1; 
         }
 
-        /* Animation for the shifting background gradient */
         @keyframes gradientBg {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        /* ------------------------------ */
 
         /* --- SPLASH SCREEN STYLES --- */
         #splash {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #e63946; /* Punchy red background */
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #e63946;
             z-index: 99999;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Slides up and fades out after 3.5 seconds */
             animation: removeSplash 0.5s cubic-bezier(0.65, 0, 0.35, 1) 3.5s forwards;
         }
 
         .splash-text {
             color: #ffffff;
-            font-size: clamp(24px, 4vw, 60px); /* Responsive sizing */
+            font-size: clamp(24px, 4vw, 60px);
             font-weight: 900;
             text-align: center;
             letter-spacing: 2px;
             padding: 0 40px;
             text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-            /* Animated pulsating effect */
             animation: pulseText 1.2s infinite alternate ease-in-out;
         }
 
@@ -79,9 +73,8 @@
             0% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-100%); visibility: hidden; }
         }
-        /* ---------------------------- */
 
-        /* Color Palette for the 6 pages */
+        /* Color Palette */
         :root {
             --page1-color: #fdfbf7;
             --page2-color: #f6f2e4;
@@ -89,13 +82,11 @@
             --page4-color: #e5deb8;
             --page5-color: #dbd2a8;
             --page6-color: #ceba96;
-            --binding-color: #a89a7c;
-
-            /* THE MASTER GRID: Controls ruled lines AND text height */
+            --binding-color: #a49678;
             --grid: 42px; 
         }
 
-        /* The main notebook container */
+        /* --- THE NOTEBOOK CONTAINER --- */
         .notebook {
             position: relative;
             width: 750px;
@@ -103,63 +94,160 @@
             height: 85vh;
             max-height: 1100px;
             margin-right: 50px; 
-            /* Slightly enhanced shadow to stand out against the darker background */
-            filter: drop-shadow(8px 8px 20px rgba(0, 0, 0, 0.4));
+            border-radius: 8px 12px 12px 8px; 
+            background-color: var(--page6-color); 
+            
+            /* Multi-layered shadow to simulate a 3D block of stacked pages */
+            box-shadow: 
+                1px 1px 0 #e3d8c1,
+                2px 2px 0 #c7bca0,
+                3px 3px 0 #e3d8c1,
+                4px 4px 0 #c7bca0,
+                5px 5px 0 #e3d8c1,
+                6px 6px 0 #c7bca0,
+                7px 7px 0 #e3d8c1,
+                8px 8px 0 #c7bca0,
+                15px 15px 25px rgba(0, 0, 0, 0.4);
         }
 
-        /* Individual pages */
-        .page {
+        /* --- THE CLEAN 3D BINDING --- */
+        .binding {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 44px;
             height: 100%;
-            border-radius: 5px 20px 20px 5px; 
-            border-left: 14px solid var(--binding-color);
-            transition: transform 0.2s ease-in-out;
-            display: flex;
+            z-index: 100; 
+            border-radius: 8px 0 0 8px;
+            background-color: var(--binding-color);
+            background-image: linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0.35) 0%,
+                rgba(255, 255, 255, 0.15) 12%,
+                rgba(255, 255, 255, 0.0) 25%,
+                rgba(0, 0, 0, 0.1) 60%,
+                rgba(0, 0, 0, 0.35) 85%,
+                rgba(0, 0, 0, 0.65) 100%
+            );
+            border-right: 1px solid rgba(0, 0, 0, 0.15);
+            box-shadow: 
+                8px 0 16px rgba(49, 43, 32, 0.25),
+                inset 1.5px 0 2px rgba(255, 255, 255, 0.3);
         }
 
-        /* Assigning colors & initial z-index */
+        /* Clean Vector Stitching Detail */
+        .binding::before {
+            content: '';
+            position: absolute;
+            top: 15px; 
+            bottom: 15px; 
+            left: 14px;
+            width: 2px;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.45) 0px,
+                rgba(255, 255, 255, 0.45) 8px,
+                transparent 8px,
+                transparent 16px
+            );
+            border-right: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        /* Interactive Bookmark Ribbon - Placed behind pages but above cover background */
+        .bookmark-ribbon {
+            position: absolute;
+            bottom: -35px;
+            left: 80px;
+            width: 20px;
+            height: 60px;
+            background-color: #e63946; 
+            z-index: 10; /* Lowered from 110 to place it inside/behind the pages */
+            cursor: pointer;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.35));
+            transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                        bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        background-color 0.3s ease;
+        }
+
+        /* Smooth interactive hovering expansion */
+        .bookmark-ribbon:hover {
+            height: 85px; 
+            bottom: -60px;
+            background-color: #ff4d5a; 
+        }
+
+        /* --- THE PAGES --- */
+        .page {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 8px 12px 12px 8px; 
+            transition: transform 0.2s ease-in-out;
+            display: flex;
+            
+            /* Page edge shadow to make inactive tabs look cleanly "sandwiched" underneath */
+            box-shadow: 4px 0 10px rgba(49, 43, 32, 0.15);
+        }
+
         #page-1 { background-color: var(--page1-color); z-index: 20; }
         #page-2 { background-color: var(--page2-color); z-index: 19; }
         #page-3 { background-color: var(--page3-color); z-index: 18; }
         #page-4 { background-color: var(--page4-color); z-index: 17; }
         #page-5 { background-color: var(--page5-color); z-index: 16; }
         #page-6 { background-color: var(--page6-color); z-index: 15; }
+        
+        /* Secret Dark Compartment Page */
+        #page-7 { background-color: #1a1610; z-index: 14; }
 
-        /* The interactable tabs */
+        /* --- THE REFINED TABS (With Seamless Blending) --- */
         .tab {
             position: absolute;
-            right: -40px; 
+            left: calc(100% - 1px); /* Positioned to overlap page border by 1px */
             width: 40px;  
-            padding: 10px 0; 
+            padding: 12px 0; 
             border-radius: 0 10px 10px 0;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: inherit;
-            /* Added transform to transition for subtle hovering */
-            transition: filter 0.2s ease, transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: inset 2px 0 5px rgba(255,255,255,0.3);
-            transform-origin: left center; /* Keeps the base anchored to the page */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform-origin: left center; 
+            border: 1px solid rgba(49, 43, 32, 0.12);
+            border-left: none; /* No separator line to allow perfect merging */
+            
+            box-shadow: 
+                2px 2px 4px rgba(49, 43, 32, 0.12), 
+                inset 1px 1px 1px rgba(255, 255, 255, 0.5),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.04);
         }
 
-        /* Subtle slide out on hover */
-        .tab:hover {
-            filter: brightness(0.95);
-            transform: translateX(4px); 
+        /* Recess non-active tabs into background depth */
+        .page:not(.active) .tab {
+            filter: brightness(0.92) contrast(0.95);
+            transform: translateX(-2px);
+            box-shadow: 
+                1px 1px 3px rgba(49, 43, 32, 0.1),
+                inset -1px -1px 3px rgba(0, 0, 0, 0.05);
         }
 
-        /* Tactile compression/click effect */
-        .tab:active {
-            filter: brightness(0.90);
-            transform: translateX(1px) scale(0.96);
-            transition: filter 0.1s ease, transform 0.1s ease;
+        /* Pop active tab forward and submerge any visible seams */
+        .page.active .tab {
+            left: calc(100% - 2px); 
+            width: 44px;
+            filter: brightness(1);
+            box-shadow: 
+                4px 3px 8px rgba(49, 43, 32, 0.18), 
+                inset 2px 1px 2px rgba(255, 255, 255, 0.7);
+            z-index: 10;
         }
 
-        /* Text inside the tabs */
+        .tab:hover { 
+            filter: brightness(0.98); 
+            transform: translateX(2px) !important; 
+        }
+
         .tab span {
             writing-mode: vertical-rl;
             text-orientation: mixed;
@@ -170,59 +258,66 @@
             letter-spacing: 1px;
             color: #3b3324;
             white-space: nowrap;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
         }
 
-        /* Content area inside the pages */
+        /* --- CONTENT & CLEAN SHADING --- */
         .content {
-            padding: var(--grid) 60px; 
-            height: 100%;
-            width: 100%;
+            padding: var(--grid) 50px var(--grid) 85px; 
+            height: 100%; width: 100%;
             box-sizing: border-box;
             overflow-y: auto;
-            border-radius: 0 20px 20px 0; 
+            border-radius: 0 12px 12px 0; 
             
-            /* The Ruled Lines */
-            background-image: repeating-linear-gradient(
-                transparent, 
-                transparent calc(var(--grid) - 2px), 
-                rgba(0,0,0,0.1) calc(var(--grid) - 2px), 
-                rgba(0,0,0,0.1) var(--grid)
-            );
-            background-size: 100% var(--grid);
-            background-position: 0 32px; 
+            /* Vignette only shadows the binding crease on the left, keeping the right edge crisp */
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.04) 0%, transparent 10%),
+                repeating-linear-gradient(
+                    transparent, 
+                    transparent calc(var(--grid) - 2px), 
+                    rgba(0,0,0,0.07) calc(var(--grid) - 2px), 
+                    rgba(0,0,0,0.07) var(--grid)
+                );
+            background-size: 100% 100%, 100% var(--grid);
+            background-position: 0 0, 0 32px; 
         }
 
-        /* Scrollbar styling */
+        /* Styling for the Dark Secret Archives Page */
+        #page-7 .content {
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 10%),
+                repeating-linear-gradient(
+                    transparent, 
+                    transparent calc(var(--grid) - 2px), 
+                    rgba(212, 175, 55, 0.12) calc(var(--grid) - 2px), 
+                    rgba(212, 175, 55, 0.12) var(--grid)
+                );
+        }
+
+        #page-7 .content * {
+            color: #e2be5c;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
         .content::-webkit-scrollbar { width: 10px; }
         .content::-webkit-scrollbar-track { background: transparent; }
         .content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 5px; }
 
-        /* STRICT TEXT ALIGNMENT */
         .content * {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             line-height: var(--grid); 
             font-family: 'Times New Roman', Times, serif;
             color: #312b20;
         }
 
-        .content h1 {
-            font-size: 1.6rem;
-            font-weight: bold;
-            margin-bottom: var(--grid);
-            position: relative; top: -3px; 
-        }
+        .content h1 { font-size: 1.6rem; font-weight: bold; margin-bottom: var(--grid); position: relative; top: -3px; }
+        .content h2 { font-size: 1.3rem; font-weight: bold; margin-bottom: var(--grid); position: relative; top: -1px; }
+        .content p { font-size: 1.15rem; margin-bottom: var(--grid); }
 
-        .content h2 {
-            font-size: 1.3rem;
-            font-weight: bold;
-            margin-bottom: var(--grid);
-            position: relative; top: -1px;
-        }
-
-        .content p {
-            font-size: 1.15rem;
-            margin-bottom: var(--grid); 
+        @media (max-width: 768px) {
+            .content { padding: var(--grid) 30px var(--grid) 65px; }
+            .binding { width: 35px; }
+            .bookmark-ribbon { left: 55px; }
         }
     </style>
 </head>
@@ -236,8 +331,14 @@
     </div>
 
     <div class="notebook">
-        <!-- Page 1 -->
-        <div class="page" id="page-1">
+        <!-- THE CLEAN 3D SPINE -->
+        <div class="binding"></div>
+
+        <!-- CLICKABLE BOOKMARK RIBBON -->
+        <a href="#" class="bookmark-ribbon" onclick="triggerSecretPage(event)" title="Click to reveal hidden contents"></a>
+
+        <!-- Page 1 (Initially Active) -->
+        <div class="page active" id="page-1">
             <div class="content">
                 <h1>What is required (in no particular order)?</h1>
                 <h2>1) Bio</h2>
@@ -292,11 +393,20 @@
             </div>
             <div class="tab" onclick="bringToFront(6)"><span>Cited</span></div>
         </div>
+
+        <!-- Secret Page 7 (Secret Archives - No tab element) -->
+        <div class="page" id="page-7">
+            <div class="content">
+                <h1>The Secret Archives</h1>
+                <h2>Congratulations!</h2>
+                <p>You have discovered the secret bookmark compartment. This hidden section of the journal holds rare conceptual archives, deleted lyric sheets, and confidential developer logs.</p>
+                <p>Every legendary concept album houses its hidden tracks. Keep this directory safe, and use the navigation tabs to return to the main pages of the notebook.</p>
+            </div>
+        </div>
     </div>
 
     <script>
         // --- SPLASH SCREEN CLEANUP ---
-        // Completely remove the splash screen from the DOM after 4.2 seconds
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash');
@@ -304,10 +414,13 @@
             }, 4200); 
         });
 
-
         // --- TAB LAYOUT LOGIC ---
         function layoutTabs() {
-            const tabs = document.querySelectorAll('.tab');
+            // Layout only active visible tabs (Page 7 has no tab, layout won't show empty spaces)
+            const tabs = Array.from(document.querySelectorAll('.tab')).filter(tab => {
+                return window.getComputedStyle(tab).display !== 'none';
+            });
+            
             let currentTopOffset = 15; 
             const spacingBetweenTabs = 5; 
 
@@ -320,38 +433,35 @@
         window.addEventListener('DOMContentLoaded', layoutTabs);
         window.addEventListener('load', () => setTimeout(layoutTabs, 100)); 
 
+        // --- BOOKMARK SHORTCUT TO SECRET PAGE ---
+        function triggerSecretPage(event) {
+            event.preventDefault();
+            bringToFront(7);
+        }
 
         // --- ANIMATED PAGE SWITCHING LOGIC ---
         let isAnimating = false;
         let currentActiveIndex = 1;
 
         function bringToFront(activeIndex) {
-            // Prevent triggering during an ongoing animation or clicking the active tab
             if (activeIndex === currentActiveIndex || isAnimating) return;
             isAnimating = true;
 
             const newPage = document.getElementById(`page-${activeIndex}`);
             const content = newPage.querySelector('.content');
 
-            // 1. Prepare new page for a "right-to-left wipe" transition
-            // Hides the body of the new page, leaving ONLY its tab protruding
             newPage.style.transition = 'none';
             newPage.style.clipPath = 'polygon(100% -10%, 150% -10%, 150% 110%, 100% 110%)';
 
-            // Prepare the text content for a slight fade/slide effect
             if (content) {
                 content.style.transition = 'none';
                 content.style.transform = 'translateX(30px)';
                 content.style.opacity = '0';
             }
 
-            // 2. Pop the element's z-index to the absolute front
             newPage.style.zIndex = 50; 
-
-            // 3. Force browser reflow to apply starting states
             void newPage.offsetWidth;
 
-            // 4. Animate! The clip-path stretches to reveal the rest of the page leftwards
             newPage.style.transition = 'clip-path 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)';
             newPage.style.clipPath = 'polygon(0% -10%, 150% -10%, 150% 110%, 0% 110%)';
 
@@ -361,7 +471,6 @@
                 content.style.opacity = '1';
             }
 
-            // 5. Clean-up & re-assign z-indexes after the 0.5s animation concludes
             setTimeout(() => {
                 const pages = Array.from(document.querySelectorAll('.page'));
                 
@@ -370,14 +479,15 @@
                     
                     if (pageIndex === activeIndex) {
                         page.style.zIndex = 20; 
-                    } else if (pageIndex > activeIndex) {
-                        page.style.zIndex = 20 - (pageIndex - activeIndex); 
+                        page.classList.add('active'); 
                     } else {
-                        page.style.zIndex = pageIndex;
+                        page.style.zIndex = pageIndex > activeIndex ? 20 - (pageIndex - activeIndex) : pageIndex;
+                        page.classList.remove('active');
                     }
                 });
 
-                // Clear inline animation styles
+                layoutTabs();
+
                 newPage.style.transition = '';
                 newPage.style.clipPath = '';
                 if (content) {
@@ -388,7 +498,7 @@
 
                 currentActiveIndex = activeIndex;
                 isAnimating = false;
-            }, 500); // 500ms aligns with CSS transitions
+            }, 500);
         }
     </script>
 
