@@ -3,220 +3,394 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+    <title>Concept Album Requirements</title>
     <style>
-        * {
+        /* Base page styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body, html {
-            height: 100%;
-            width: 100%;
             overflow: hidden;
-            font-family: Arial, sans-serif;
+            position: relative;
+
+            /* --- NEW DYNAMIC BACKGROUND --- */
+            background: linear-gradient(-45deg, #141e30, #243b55, #2c3e50, #0f2027);
+            background-size: 400% 400%;
+            animation: gradientBg 18s ease infinite;
         }
 
-        /* Background video */
-        .background-video {
+        /* Subtle grid pattern overlay for the background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 35px 35px;
+            z-index: -1; /* Keeps it strictly behind the notebook */
+        }
+
+        /* Animation for the shifting background gradient */
+        @keyframes gradientBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* ------------------------------ */
+
+        /* --- SPLASH SCREEN STYLES --- */
+        #splash {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #e63946; /* Punchy red background */
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Slides up and fades out after 3.5 seconds */
+            animation: removeSplash 0.5s cubic-bezier(0.65, 0, 0.35, 1) 3.5s forwards;
+        }
+
+        .splash-text {
+            color: #ffffff;
+            font-size: clamp(24px, 4vw, 60px); /* Responsive sizing */
+            font-weight: 900;
+            text-align: center;
+            letter-spacing: 2px;
+            padding: 0 40px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            /* Animated pulsating effect */
+            animation: pulseText 1.2s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseText {
+            0% { transform: scale(0.95); opacity: 0.9; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+
+        @keyframes removeSplash {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100%); visibility: hidden; }
+        }
+        /* ---------------------------- */
+
+        /* Color Palette for the 6 pages */
+        :root {
+            --page1-color: #fdfbf7;
+            --page2-color: #f6f2e4;
+            --page3-color: #efe8d1;
+            --page4-color: #e5deb8;
+            --page5-color: #dbd2a8;
+            --page6-color: #ceba96;
+            --binding-color: #a89a7c;
+
+            /* THE MASTER GRID: Controls ruled lines AND text height */
+            --grid: 42px; 
+        }
+
+        /* The main notebook container */
+        .notebook {
+            position: relative;
+            width: 750px;
+            max-width: 80vw;
+            height: 85vh;
+            max-height: 1100px;
+            margin-right: 50px; 
+            /* Slightly enhanced shadow to stand out against the darker background */
+            filter: drop-shadow(8px 8px 20px rgba(0, 0, 0, 0.4));
+        }
+
+        /* Individual pages */
+        .page {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            z-index: -2;
+            border-radius: 5px 20px 20px 5px; 
+            border-left: 14px solid var(--binding-color);
+            transition: transform 0.2s ease-in-out;
+            display: flex;
         }
 
-        /* Centered profile box */
-        .profile-container {
+        /* Assigning colors & initial z-index */
+        #page-1 { background-color: var(--page1-color); z-index: 20; }
+        #page-2 { background-color: var(--page2-color); z-index: 19; }
+        #page-3 { background-color: var(--page3-color); z-index: 18; }
+        #page-4 { background-color: var(--page4-color); z-index: 17; }
+        #page-5 { background-color: var(--page5-color); z-index: 16; }
+        #page-6 { background-color: var(--page6-color); z-index: 15; }
+
+        /* The interactable tabs */
+        .tab {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            z-index: 1;
-        }
-
-        /* Expand animation */
-        @keyframes expand {
-            0% {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                opacity: 0.5;
-            }
-            100% {
-                width: 300px;
-                height: 400px;
-                border-radius: 15px;
-                opacity: 1;
-            }
-        }
-
-        .profile-box {
-            width: 300px;
-            height: 400px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            animation: expand 2.5s ease-out;
+            right: -40px; 
+            width: 40px;  
+            padding: 10px 0; 
+            border-radius: 0 10px 10px 0;
+            cursor: pointer;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .profile-content {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            background-color: inherit;
+            /* Added transform to transition for subtle hovering */
+            transition: filter 0.2s ease, transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: inset 2px 0 5px rgba(255,255,255,0.3);
+            transform-origin: left center; /* Keeps the base anchored to the page */
         }
 
-        .profile-pic {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 0 15px 10px #4B0082, 0 0 0 2px #4B0082; /* stronger purple glow with 2px purple border */
+        /* Subtle slide out on hover */
+        .tab:hover {
+            filter: brightness(0.95);
+            transform: translateX(4px); 
         }
 
-        .username {
-            font-size: 36px;
+        /* Tactile compression/click effect */
+        .tab:active {
+            filter: brightness(0.90);
+            transform: translateX(1px) scale(0.96);
+            transition: filter 0.1s ease, transform 0.1s ease;
+        }
+
+        /* Text inside the tabs */
+        .tab span {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            color: #4B0082; /* stronger purple */
-            text-shadow: 0 0 15px rgba(128, 0, 128, 0.8); /* more intense purple glow */
-            margin-bottom: 10px;
-            text-align: center;
+            font-size: 1.15rem;
+            letter-spacing: 1px;
+            color: #3b3324;
+            white-space: nowrap;
         }
 
-        .roblox-link {
-            position: relative;
-            display: inline-block;
+        /* Content area inside the pages */
+        .content {
+            padding: var(--grid) 60px; 
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            border-radius: 0 20px 20px 0; 
+            
+            /* The Ruled Lines */
+            background-image: repeating-linear-gradient(
+                transparent, 
+                transparent calc(var(--grid) - 2px), 
+                rgba(0,0,0,0.1) calc(var(--grid) - 2px), 
+                rgba(0,0,0,0.1) var(--grid)
+            );
+            background-size: 100% var(--grid);
+            background-position: 0 32px; 
         }
 
-        .roblox-link img {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            transition: transform 0.2s ease;
+        /* Scrollbar styling */
+        .content::-webkit-scrollbar { width: 10px; }
+        .content::-webkit-scrollbar-track { background: transparent; }
+        .content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 5px; }
+
+        /* STRICT TEXT ALIGNMENT */
+        .content * {
+            margin: 0;
+            padding: 0;
+            line-height: var(--grid); 
+            font-family: 'Times New Roman', Times, serif;
+            color: #312b20;
         }
 
-        .roblox-link img:hover {
-            transform: scale(1.1);
-        }
-
-        .tip-text {
-            font-size: 20px;
+        .content h1 {
+            font-size: 1.6rem;
             font-weight: bold;
-            color: #4B0082; /* stronger purple */
-            margin-top: 10px;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            text-shadow: 0 0 15px rgba(128, 0, 128, 0.8); /* more intense purple glow */
+            margin-bottom: var(--grid);
+            position: relative; top: -3px; 
+        }
+
+        .content h2 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: var(--grid);
+            position: relative; top: -1px;
+        }
+
+        .content p {
+            font-size: 1.15rem;
+            margin-bottom: var(--grid); 
         }
     </style>
 </head>
 <body>
-    <!-- Background video -->
-    <video class="background-video" autoplay loop muted>
-        <source src="https://cdn.pixabay.com/video/2025/01/17/253177_large.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
 
-    <!-- Profile Section -->
-    <div class="profile-container">
-        <div class="profile-box" id="profile-box">
-            <div class="profile-content" id="profile-content">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYAdzCIM6i3F3FOqMJn_FXoVcnBa5uAyO8AA&s" alt="Profile Picture" class="profile-pic">
-                <div class="username">chadleythecat</div>
-                <div class="roblox-link">
-                    <a href="https://www.roblox.com/users/1604498890" target="_blank">
-                        <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWlxY3h6b3h0eWtqZDRvd25uZm8xaTN6dzBncWRsdjNsanc0NTRraCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/1QcqLUCuQca1edQ0rK/giphy.gif" alt="Roblox Profile Link">
-                    </a>
-                </div>
-                <div class="tip-text" id="tip-text">TIP: YOU DON'T HAVE MORE THAN ONE LIFE, SO DON'T DIE</div>
+    <!-- ANIMATED SPLASH SCREEN -->
+    <div id="splash">
+        <div class="splash-text">
+            MAKE SURE TO EITHER FULLSCREEN OR PRESS F11 FOR BEST VIEWING EXPERIENCE
+        </div>
+    </div>
+
+    <div class="notebook">
+        <!-- Page 1 -->
+        <div class="page" id="page-1">
+            <div class="content">
+                <h1>What is required (in no particular order)?</h1>
+                <h2>1) Bio</h2>
+                <p>A Biography on the artist is required, including a section that explains where this concept album came from. What started it? Why? Etc. It is up to you to decide what is important, by way of important biographical information. For some artists, their home life as a child was / is instrumental for their musical career and persona, while for others, it can be glossed over.</p>
             </div>
+            <div class="tab" onclick="bringToFront(1)"><span>Bio</span></div>
+        </div>
+
+        <!-- Page 2 -->
+        <div class="page" id="page-2">
+            <div class="content">
+                <h2>2) Annotations</h2>
+                <p>For at least two songs, you must complete annotations, explanations of the song as a singular entity and a piece of the greater concept album, is also required. More information on how to do these annotations, etc. will be provided a little later.</p>
+            </div>
+            <div class="tab" onclick="bringToFront(2)"><span>Annotations</span></div>
+        </div>
+
+        <!-- Page 3 -->
+        <div class="page" id="page-3">
+            <div class="content">
+                <h2>3) Creative Connection</h2>
+                <p>(Alliteration makes things sound soooo much cooler) – Artwork? Sure! Make a music video? I like it! Dance to a song? Impressive! Sing a cover? Maybe… (I will explain).</p>
+                <p>The whole point is to make a connection with the album or a song, provide insight and understanding in a creative way and upload it onto your site. An explanation of what you have ‘done’ may be needed… For example, a ‘cover’ of a song is not enough – why did you do what you did when you did what you did? Get it? You know, why hit those high notes at that time when Ol’ Blue Eyes didn’t? (Do you even know Ol’ Blue Eyes?).</p>
+            </div>
+            <div class="tab" onclick="bringToFront(3)"><span>Creative</span></div>
+        </div>
+
+        <!-- Page 4 -->
+        <div class="page" id="page-4">
+            <div class="content">
+                <h2>4) Music links</h2>
+                <p>Can be MP3 files, links to actual videos, you name it…. Figure it out.</p>
+            </div>
+            <div class="tab" onclick="bringToFront(4)"><span>Links</span></div>
+        </div>
+
+        <!-- Page 5 -->
+        <div class="page" id="page-5">
+            <div class="content">
+                <h2>5) Analysis of Concept Album</h2>
+                <p>You can call it an essay if you want, I see it more as an analysis. To me this will be the most challenging, ‘basic’ and exciting part. You are required to explain the Concept Album from front to back – take me on the journey throughout the album.</p>
+                <p>You should include lyrics / quotes from multiple songs as you explain the journey. For some, all songs will need to be explained individually, for others, songs may be ‘lumped together’. It is all dependent on you and your album.</p>
+            </div>
+            <div class="tab" onclick="bringToFront(5)"><span>Analysis</span></div>
+        </div>
+
+        <!-- Page 6 -->
+        <div class="page" id="page-6">
+            <div class="content">
+                <h2>6) List of Works Cited</h2>
+                <p>You are required to keep track of the sources that you use through your work. This will include the name of the author, the title of the article/webpage, and the URL from where it was found.</p>
+            </div>
+            <div class="tab" onclick="bringToFront(6)"><span>Cited</span></div>
         </div>
     </div>
 
     <script>
-        const profileBox = document.getElementById('profile-box');
-        const profileContent = document.getElementById('profile-content');
-        const tipText = document.getElementById('tip-text');
-
-        // Reveal the profile content after 2.5 seconds
-        setTimeout(() => {
-            profileContent.style.display = 'flex';
-            profileContent.style.opacity = 1;
-
-            // Start the tip text animation
-            changeText();
-        }, 2500);
-
-        // Text change logic with a loop
-        function changeText() {
+        // --- SPLASH SCREEN CLEANUP ---
+        // Completely remove the splash screen from the DOM after 4.2 seconds
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                tipText.style.opacity = 1;
-                tipText.textContent = "TIP: YOU DON'T HAVE MORE THAN ONE LIFE, SO DON'T DIE";
-            }, 0);
+                const splash = document.getElementById('splash');
+                if (splash) splash.remove();
+            }, 4200); 
+        });
 
-            setTimeout(() => {
-                tipText.style.opacity = 0;
-            }, 6500);
 
-            setTimeout(() => {
-                tipText.style.opacity = 1;
-                tipText.textContent = "TIP: THIS ISN'T A LOADING SCREEN";
-            }, 13000);
+        // --- TAB LAYOUT LOGIC ---
+        function layoutTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            let currentTopOffset = 15; 
+            const spacingBetweenTabs = 5; 
 
-            setTimeout(() => {
-                tipText.style.opacity = 0;
-            }, 19500);
+            tabs.forEach(tab => {
+                tab.style.top = currentTopOffset + 'px';
+                currentTopOffset += tab.offsetHeight + spacingBetweenTabs;
+            });
+        }
 
-            setTimeout(() => {
-                tipText.style.opacity = 1;
-                tipText.textContent = "TIP: I KNOW WHERE YOU LIVE";
-            }, 26000);
+        window.addEventListener('DOMContentLoaded', layoutTabs);
+        window.addEventListener('load', () => setTimeout(layoutTabs, 100)); 
 
-            setTimeout(() => {
-                tipText.style.opacity = 0;
-            }, 32500);
 
-            setTimeout(() => {
-                tipText.style.opacity = 1;
-                tipText.textContent = "TIP: WRITE THAT DOWN, WRITE THAT DOWN";
-            }, 39000);
+        // --- ANIMATED PAGE SWITCHING LOGIC ---
+        let isAnimating = false;
+        let currentActiveIndex = 1;
 
-            setTimeout(() => {
-                tipText.style.opacity = 0;
-            }, 45500);
+        function bringToFront(activeIndex) {
+            // Prevent triggering during an ongoing animation or clicking the active tab
+            if (activeIndex === currentActiveIndex || isAnimating) return;
+            isAnimating = true;
 
-            setTimeout(() => {
-                tipText.style.opacity = 1;
-                tipText.textContent = "TIP: I WAS DEBUGGING AUDIO FOR 4 HOURS AND IT STILL DIDN'T WORK";
-            }, 52000);
+            const newPage = document.getElementById(`page-${activeIndex}`);
+            const content = newPage.querySelector('.content');
 
-            setTimeout(() => {
-                tipText.style.opacity = 1;
-                tipText.textContent = "TIP: E";
-            }, 58500);
+            // 1. Prepare new page for a "right-to-left wipe" transition
+            // Hides the body of the new page, leaving ONLY its tab protruding
+            newPage.style.transition = 'none';
+            newPage.style.clipPath = 'polygon(100% -10%, 150% -10%, 150% 110%, 100% 110%)';
 
-            setTimeout(() => {
-                tipText.style.opacity = 0;
-            }, 65000);
+            // Prepare the text content for a slight fade/slide effect
+            if (content) {
+                content.style.transition = 'none';
+                content.style.transform = 'translateX(30px)';
+                content.style.opacity = '0';
+            }
 
+            // 2. Pop the element's z-index to the absolute front
+            newPage.style.zIndex = 50; 
+
+            // 3. Force browser reflow to apply starting states
+            void newPage.offsetWidth;
+
+            // 4. Animate! The clip-path stretches to reveal the rest of the page leftwards
+            newPage.style.transition = 'clip-path 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)';
+            newPage.style.clipPath = 'polygon(0% -10%, 150% -10%, 150% 110%, 0% 110%)';
+
+            if (content) {
+                content.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
+                content.style.transform = 'translateX(0)';
+                content.style.opacity = '1';
+            }
+
+            // 5. Clean-up & re-assign z-indexes after the 0.5s animation concludes
             setTimeout(() => {
-                changeText();
-            }, 65000);
+                const pages = Array.from(document.querySelectorAll('.page'));
+                
+                pages.forEach((page) => {
+                    const pageIndex = parseInt(page.id.split('-')[1]);
+                    
+                    if (pageIndex === activeIndex) {
+                        page.style.zIndex = 20; 
+                    } else if (pageIndex > activeIndex) {
+                        page.style.zIndex = 20 - (pageIndex - activeIndex); 
+                    } else {
+                        page.style.zIndex = pageIndex;
+                    }
+                });
+
+                // Clear inline animation styles
+                newPage.style.transition = '';
+                newPage.style.clipPath = '';
+                if (content) {
+                    content.style.transition = '';
+                    content.style.transform = '';
+                    content.style.opacity = '';
+                }
+
+                currentActiveIndex = activeIndex;
+                isAnimating = false;
+            }, 500); // 500ms aligns with CSS transitions
         }
     </script>
+
 </body>
 </html>
