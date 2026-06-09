@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Final project</title>
+    
+    <!-- Added Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
         /* Import handwritten font for the hint text */
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
@@ -75,6 +79,81 @@
             100% { opacity: 0; transform: translateY(-100%); visibility: hidden; }
         }
 
+        /* --- ACHIEVEMENT POPUP STYLES --- */
+        .achievement-popup {
+            position: fixed;
+            top: 25px;
+            right: -400px; 
+            width: 360px;
+            height: 90px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+            transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 15px;
+        }
+
+        .achievement-popup.show {
+            right: 25px; 
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));
+        }
+
+        .achievement-text-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .achievement-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #888;
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .achievement-text {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #e63946;
+            letter-spacing: 0.5px;
+        }
+
+        .achievement-svg-border {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        .achievement-svg-border rect {
+            fill: none;
+            stroke: #e63946;
+            stroke-width: 6;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+        }
+
+        .achievement-popup.show .achievement-svg-border rect {
+            animation: timerBorder 2.7s linear forwards;
+        }
+
+        @keyframes timerBorder {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 100; }
+        }
+
         /* Color Palette */
         :root {
             --page1-color: #fdfbf7;
@@ -90,15 +169,14 @@
         /* --- THE NOTEBOOK CONTAINER --- */
         .notebook {
             position: relative;
-            width: 750px;
-            max-width: 80vw;
+            width: 850px; /* Slightly widened to accommodate side-by-side annotations */
+            max-width: 85vw;
             height: 85vh;
             max-height: 1100px;
             margin-right: 50px; 
             border-radius: 8px 12px 12px 8px; 
             background-color: var(--page6-color); 
             
-            /* Multi-layered shadow to simulate a 3D block of stacked pages */
             box-shadow: 
                 1px 1px 0 #e3d8c1,
                 2px 2px 0 #c7bca0,
@@ -136,7 +214,6 @@
                 inset 1.5px 0 2px rgba(255, 255, 255, 0.3);
         }
 
-        /* Clean Vector Stitching Detail */
         .binding::before {
             content: '';
             position: absolute;
@@ -154,7 +231,7 @@
             border-right: 1px solid rgba(0, 0, 0, 0.12);
         }
 
-        /* Interactive Bookmark Ribbon - Placed behind pages but above cover background */
+        /* Interactive Bookmark Ribbon */
         .bookmark-ribbon {
             position: absolute;
             bottom: -35px;
@@ -162,7 +239,7 @@
             width: 20px;
             height: 60px;
             background-color: #e63946; 
-            z-index: 10; /* Lowered from 110 to place it inside/behind the pages */
+            z-index: 10; 
             cursor: pointer;
             clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
             filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.35));
@@ -171,7 +248,6 @@
                         background-color 0.3s ease;
         }
 
-        /* Smooth interactive hovering expansion */
         .bookmark-ribbon:hover {
             height: 85px; 
             bottom: -60px;
@@ -182,12 +258,12 @@
         .click-hint {
             position: absolute;
             bottom: -50px;
-            left: 78px; /* Perfectly aligned so the arrow points at the center of the 80px bookmark */
+            left: 78px; 
             display: flex;
             align-items: center;
             gap: 6px;
             z-index: 100;
-            pointer-events: none; /* Allows clicking through it to the ribbon */
+            pointer-events: none; 
             animation: floatHint 2.5s infinite ease-in-out;
             filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.4));
         }
@@ -214,8 +290,6 @@
             border-radius: 8px 12px 12px 8px; 
             transition: transform 0.2s ease-in-out;
             display: flex;
-            
-            /* Page edge shadow to make inactive tabs look cleanly "sandwiched" underneath */
             box-shadow: 4px 0 10px rgba(49, 43, 32, 0.15);
         }
 
@@ -225,14 +299,12 @@
         #page-4 { background-color: var(--page4-color); z-index: 17; }
         #page-5 { background-color: var(--page5-color); z-index: 16; }
         #page-6 { background-color: var(--page6-color); z-index: 15; }
-        
-        /* Secret Dark Compartment Page */
         #page-7 { background-color: #1a1610; z-index: 14; }
 
-        /* --- THE REFINED TABS (With Seamless Blending) --- */
+        /* --- THE REFINED TABS --- */
         .tab {
             position: absolute;
-            left: calc(100% - 1px); /* Positioned to overlap page border by 1px */
+            left: calc(100% - 1px); 
             width: 40px;  
             padding: 12px 0; 
             border-radius: 0 10px 10px 0;
@@ -244,7 +316,7 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             transform-origin: left center; 
             border: 1px solid rgba(49, 43, 32, 0.12);
-            border-left: none; /* No separator line to allow perfect merging */
+            border-left: none; 
             
             box-shadow: 
                 2px 2px 4px rgba(49, 43, 32, 0.12), 
@@ -252,7 +324,6 @@
                 inset -2px -2px 4px rgba(0, 0, 0, 0.04);
         }
 
-        /* Recess non-active tabs into background depth */
         .page:not(.active) .tab {
             filter: brightness(0.92) contrast(0.95);
             transform: translateX(-2px);
@@ -261,7 +332,6 @@
                 inset -1px -1px 3px rgba(0, 0, 0, 0.05);
         }
 
-        /* Pop active tab forward and submerge any visible seams */
         .page.active .tab {
             left: calc(100% - 2px); 
             width: 44px;
@@ -298,7 +368,6 @@
             overflow-y: auto;
             border-radius: 0 12px 12px 0; 
             
-            /* Vignette only shadows the binding crease on the left, keeping the right edge crisp */
             background-image: 
                 linear-gradient(to right, rgba(0,0,0,0.04) 0%, transparent 10%),
                 repeating-linear-gradient(
@@ -311,7 +380,6 @@
             background-position: 0 0, 0 32px; 
         }
 
-        /* Styling for the Dark Secret Archives Page */
         #page-7 .content {
             background-image: 
                 linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 10%),
@@ -343,11 +411,118 @@
         .content h2 { font-size: 1.3rem; font-weight: bold; margin-bottom: var(--grid); position: relative; top: -1px; }
         .content p { font-size: 1.15rem; margin-bottom: var(--grid); }
 
+
+        /* --- INTERACTIVE ANNOTATION UI (PAGE 2) --- */
+        .instruction-text {
+            font-style: italic;
+            color: #666 !important;
+            margin-bottom: 20px;
+        }
+
+        .skit-block {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .skit-text {
+            width: 55%;
+            padding: 8px 12px;
+            line-height: 1.7 !important; /* Overrides notebook grid to look like a script */
+            font-family: Arial, Helvetica, sans-serif !important;
+            font-size: 1.05rem;
+            color: #202124 !important;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            background-color: rgba(253, 236, 170, 0.6); /* Default light yellow highlight */
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .skit-text:hover {
+            background-color: rgba(253, 226, 147, 0.9);
+            transform: translateX(3px);
+        }
+
+        .skit-text.active {
+            background-color: #fbbc04; /* Darker Google Docs Orange/Yellow */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        /* --- Google Docs Style Comment Card --- */
+        .skit-note {
+            width: 40%;
+            margin-left: 5%;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+            font-family: 'Roboto', Arial, sans-serif !important;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(20px);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+
+        /* The Connecting Line */
+        .skit-note::before {
+            content: '';
+            position: absolute;
+            left: -30px; /* Bridge the gap between text and note */
+            top: 25px;
+            width: 30px;
+            height: 2px;
+            background-color: #fbbc04;
+            opacity: 0;
+            transform-origin: right;
+            transform: scaleX(0);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .skit-block.show-note .skit-note {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .skit-block.show-note .skit-note::before {
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        .note-header {
+            margin-bottom: 8px;
+        }
+
+        .note-author-name {
+            font-weight: bold;
+            font-size: 1.05rem;
+            color: #202124 !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        .note-body {
+            font-size: 0.95rem;
+            color: #3c4043 !important;
+            line-height: 1.5 !important;
+            margin: 0 !important;
+        }
+
         @media (max-width: 768px) {
             .content { padding: var(--grid) 30px var(--grid) 65px; }
             .binding { width: 35px; }
             .bookmark-ribbon { left: 55px; }
             .click-hint { left: 53px; }
+            
+            /* Mobile tweaks for annotations */
+            .skit-block { flex-direction: column; }
+            .skit-text { width: 100%; margin-bottom: 10px; }
+            .skit-note { width: 100%; margin-left: 0; }
+            .skit-note::before { display: none; } /* Hide connecting line on mobile */
         }
     </style>
 </head>
@@ -357,6 +532,18 @@
     <div id="splash">
         <div class="splash-text">
             MAKE SURE TO EITHER FULLSCREEN OR PRESS F11 FOR BEST VIEWING EXPERIENCE
+        </div>
+    </div>
+
+    <!-- ACHIEVEMENT NOTIFICATION BUBBLE -->
+    <div id="achievement-popup" class="achievement-popup">
+        <svg class="achievement-svg-border">
+            <rect x="3" y="3" rx="9" ry="9" width="354" height="84" pathLength="100" />
+        </svg>
+        <div class="achievement-icon">🏆</div>
+        <div class="achievement-text-container">
+            <div class="achievement-title">Achievement Unlocked</div>
+            <div class="achievement-text">SECRET PAGES</div>
         </div>
     </div>
 
@@ -385,11 +572,127 @@
             <div class="tab" onclick="bringToFront(1)"><span>Bio</span></div>
         </div>
 
-        <!-- Page 2 -->
+        <!-- Page 2 (UPDATED WITH ANNOTATIONS) -->
         <div class="page" id="page-2">
             <div class="content">
-                <h2>2) Annotations</h2>
-                <p>For at least two songs, you must complete annotations, explanations of the song as a singular entity and a piece of the greater concept album, is also required. More information on how to do these annotations, etc. will be provided a little later.</p>
+                <h2>2) Annotations: Dr. West (Skit)</h2>
+                <p class="instruction-text">Click the highlighted text blocks below to reveal the annotations.</p>
+
+                <!-- Block 1 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        "Morning, Marshall."<br>
+                        "Morning, doc."<br>
+                        "So we're discharging you today, how are you feeling?"<br>
+                        "Ah, anxious."<br>
+                        "Anxiety?"<br>
+                        "Well, anxious to get home, anxious to get back into the world. Nervous."
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">This skit begins with a seemingly normal interaction between Eminem and his Doctor, checking on his health and things to go over, as well as how he feels.</p>
+                    </div>
+                </div>
+
+                <!-- Block 2 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        "Nervous? C'mon, Marshall, you're a big boy now<br>
+                        You're sounding like a bit of a baby, you can do this<br>
+                        You found a sponsor yet?"
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">Here the story becomes more apparent in that this isn't a "normal interaction"—it's something more sinister.</p>
+                    </div>
+                </div>
+
+                <!-- Block 3 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        "Um, not yet. But I mean, when I get back..."<br>
+                        "Well, if you find one, you find one. If you don't, you don't."<br>
+                        "Well, yeah, I mean I gotta start going to meetings first and... Wait, what?"<br>
+                        "Well, I mean you don't absolutely have to go to meetings<br>
+                        I mean it's not like... a requirement<br>
+                        If they fit into your schedule, I know you're a busy person."<br>
+                        "Well, yeah, but I thought sobriety was the most important thing?"
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">Eminem shows that he's actually focused on fixing his addiction here, but the doctor is acting off</p>
+                    </div>
+                </div>
+
+                <!-- Block 4 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        "So what else are you thinking?"<br>
+                        "Um, well, I know I gotta start practicing the steps, and<br>
+                        I mean, learn 'em, and start being able to apply 'em."<br>
+                        "The steps?"<br>
+                        "Yeah, the steps."<br>
+                        "There's a lot of them, aren't there?"<br>
+                        "Well, 12, but–"<br>
+                        "Christ, I don't even know them all."<br>
+                        "Really?"<br>
+                        "Anything else?"
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">It becomes more clear here that Eminem's doctor isn't quite acting normal, as he doesn't even remember the steps for Marshall's rehab assignments, mocking them as if they are something unimportant.</p>
+                    </div>
+                </div>
+
+                <!-- Block 5 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        "Um, well, I mean the only other question I have is, like<br>
+                        What do I do if I find myself in a situation where<br>
+                        Maybe somebody is drinking around me or something like that<br>
+                        And I get tempted to—"<br>
+                        "Take a drink."<br>
+                        "What?"<br>
+                        "Take a drink, and y'know, take the edge off."<br>
+                        "Take the edge off? Man, if I have a drink I already know what that's gonna lead me to."
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">Here, we finally find out that there is definitely something wrong with the doctor and Eminem is protesting against what the doctor is saying.</p>
+                    </div>
+                </div>
+
+                <!-- Block 6 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        "What, you mean these?"<br>
+                        "No, what the fuck?!"<br>
+                        "Marshall, what's the matter, darling? Having some doubts, are we? Marshall, you can't leave me, you'll never leave me, Marshall<br>
+                        We'll always be together, Marshall. Marshall? Marshall!!"<br>
+                        "Oh no, no, no! Come on, man!<br>
+                        Oh, fuck you, man!<br>
+                        No, no, no, no!"<br>
+                        "Oh, shit!"
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">It becomes clear that Eminem realizes his doctor isn't his doctor, and his doctor ends up being his alter ego, slim shady. Eminem reacts accordingly and starts swearing and goes into a panicked frenzy, it's as if all his rehab progress has been flushed down the drain.</p>
+                    </div>
+                </div>
+
+                <br><br> <!-- Space for scrolling at bottom -->
             </div>
             <div class="tab" onclick="bringToFront(2)"><span>Annotations</span></div>
         </div>
@@ -456,7 +759,6 @@
 
         // --- TAB LAYOUT LOGIC ---
         function layoutTabs() {
-            // Layout only active visible tabs (Page 7 has no tab, layout won't show empty spaces)
             const tabs = Array.from(document.querySelectorAll('.tab')).filter(tab => {
                 return window.getComputedStyle(tab).display !== 'none';
             });
@@ -473,17 +775,79 @@
         window.addEventListener('DOMContentLoaded', layoutTabs);
         window.addEventListener('load', () => setTimeout(layoutTabs, 100)); 
 
-        // --- BOOKMARK SHORTCUT TO SECRET PAGE ---
+        // --- INTERACTIVE ANNOTATIONS LOGIC ---
+        function toggleAnnotation(clickedBlock) {
+            const isActive = clickedBlock.classList.contains('show-note');
+            
+            // First, close all other annotations and reset text highlight colors
+            document.querySelectorAll('.skit-block').forEach(block => {
+                block.classList.remove('show-note');
+                block.querySelector('.skit-text').classList.remove('active');
+            });
+
+            // If the clicked block wasn't already active, open it
+            if (!isActive) {
+                clickedBlock.classList.add('show-note');
+                clickedBlock.querySelector('.skit-text').classList.add('active');
+            }
+        }
+
+        // --- BOOKMARK SHORTCUT TO SECRET PAGE & ACHIEVEMENT ---
+        let hasUnlockedAchievement = false;
+
         function triggerSecretPage(event) {
             event.preventDefault();
             bringToFront(7);
             
-            // Optional: Hide the hint after clicking the secret bookmark
             const hint = document.querySelector('.click-hint');
             if (hint) {
                 hint.style.transition = "opacity 0.5s ease";
                 hint.style.opacity = "0";
                 setTimeout(() => hint.remove(), 500);
+            }
+
+            if (!hasUnlockedAchievement) {
+                hasUnlockedAchievement = true;
+                
+                setTimeout(() => {
+                    const popup = document.getElementById('achievement-popup');
+                    popup.classList.add('show');
+
+                    // --- FULL SCREEN CONTINUOUS DUAL-CANNON CONFETTI ---
+                    const duration = 2700; // Match popup timer exactly
+                    const end = Date.now() + duration;
+
+                    (function frame() {
+                        // Left Cannon
+                        confetti({
+                            particleCount: 7,
+                            angle: 60,
+                            spread: 80,
+                            origin: { x: 0, y: 0.8 }, 
+                            colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'],
+                            zIndex: 100001
+                        });
+                        // Right Cannon
+                        confetti({
+                            particleCount: 7,
+                            angle: 120,
+                            spread: 80,
+                            origin: { x: 1, y: 0.8 }, 
+                            colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'],
+                            zIndex: 100001
+                        });
+
+                        // Keep going until the 2.7 seconds are up
+                        if (Date.now() < end) {
+                            requestAnimationFrame(frame);
+                        }
+                    }());
+
+                    setTimeout(() => {
+                        popup.classList.remove('show');
+                    }, 2700);
+
+                }, 400); 
             }
         }
 
