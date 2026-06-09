@@ -1,5 +1,3 @@
-<!-- START OF FILE 1.2.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Final project</title>
     <style>
+        /* Import handwritten font for the hint text */
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+
         /* Base page styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -177,6 +178,34 @@
             background-color: #ff4d5a; 
         }
 
+        /* --- CLICK ME HINT --- */
+        .click-hint {
+            position: absolute;
+            bottom: -50px;
+            left: 78px; /* Perfectly aligned so the arrow points at the center of the 80px bookmark */
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 100;
+            pointer-events: none; /* Allows clicking through it to the ribbon */
+            animation: floatHint 2.5s infinite ease-in-out;
+            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.4));
+        }
+
+        .click-hint span {
+            color: #ffffff;
+            font-family: 'Caveat', 'Comic Sans MS', cursive;
+            font-size: 1.6rem;
+            transform: rotate(-5deg);
+            margin-top: 5px; 
+            letter-spacing: 1px;
+        }
+
+        @keyframes floatHint {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
         /* --- THE PAGES --- */
         .page {
             position: absolute;
@@ -318,6 +347,7 @@
             .content { padding: var(--grid) 30px var(--grid) 65px; }
             .binding { width: 35px; }
             .bookmark-ribbon { left: 55px; }
+            .click-hint { left: 53px; }
         }
     </style>
 </head>
@@ -337,11 +367,20 @@
         <!-- CLICKABLE BOOKMARK RIBBON -->
         <a href="#" class="bookmark-ribbon" onclick="triggerSecretPage(event)" title="Click to reveal hidden contents"></a>
 
+        <!-- CLICK ME HINT WITH ARROW -->
+        <div class="click-hint">
+            <svg width="40" height="25" viewBox="0 0 40 25">
+                <path d="M 40 18 L 20 18 Q 12 18 12 10 L 12 6" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                <polygon points="7,8 12,0 17,8" fill="#ffffff"/>
+            </svg>
+            <span>click me!</span>
+        </div>
+
         <!-- Page 1 (Initially Active) -->
         <div class="page active" id="page-1">
             <div class="content">
                 <h1>1) Biography</h1>
-                <p>Eminem, also known as Marshall Mathers, was born Oct 17, 1972 in St. Joseph Missouri. In the period of that night to today, he’s become a distinguished rapper and music producer. Nowadays recognized as one of the best-selling rappers, and as one of the best selling musical artists in history. He grew up in a broken household, and his parents separated around when Eminem was a year and a half old. Eminem grew up often switching houses, moving between different states, and mainly lived with family members. He grew up in an environment surrounded by poverty, violence, neglect, and drug use. Growing up in that kind of environment he became a victim, succumbing to the use of drugs at a young age. Eminem's album “Relapse” was created to express the idea in his mind of his personal journey through addiction and desperation. Eminem eventually came back into the music scene with this album after after a 5 year hiatus which marked his comeback after fighting with a heavy drug addiction. The way he was brought up contributed to songs spanning over his whole career, consisting of him mentioning his upbringing and how he felt growing up in a situation where he was constantly around drug use, introduced to drugs, and constantly in a violent setting, mentioned in his song “My Mom”. </p>
+                <p>Eminem, also known as Marshall Mathers, was born Oct 17, 1972 in St. Joseph Missouri. In the period of that night to today, he’s become a distinguished rapper and music producer. Nowadays recognized as one of the best-selling rappers, and as one of the best selling musical artists in history. He grew up in a broken household, and his parents separated around when Eminem was a year and a half old. Eminem grew up often switching houses, moving between different states, and mainly lived with family members. He grew up in an environment surrounded by poverty, violence, neglect, and drug use. Growing up in that kind of environment he became a victim, succumbing to the use of drugs at a young age. Eminem's album “Relapse” was created to express the idea in his mind of his personal journey through addiction and desperation. Eminem eventually came back into the music scene with this album after after a 5 year hiatus which marked his comeback after fighting with a heavy drug addiction. The way he was brought up contributed to songs spanning over his whole career, consisting of him mentioning his upbringing and how he felt growing up in a situation where he was constantly around drug use, introduced to drugs, and constantly in a violent setting, mentioned in his song “My Mom”.</p>
             </div>
             <div class="tab" onclick="bringToFront(1)"><span>Bio</span></div>
         </div>
@@ -437,6 +476,14 @@
         function triggerSecretPage(event) {
             event.preventDefault();
             bringToFront(7);
+            
+            // Optional: Hide the hint after clicking the secret bookmark
+            const hint = document.querySelector('.click-hint');
+            if (hint) {
+                hint.style.transition = "opacity 0.5s ease";
+                hint.style.opacity = "0";
+                setTimeout(() => hint.remove(), 500);
+            }
         }
 
         // --- ANIMATED PAGE SWITCHING LOGIC ---
