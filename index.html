@@ -211,10 +211,13 @@
 
         /* --- EASTER EGG STYLES --- */
         .stan-lyric {
-            position: absolute; bottom: 15px; right: 25px; font-family: 'Caveat', cursive !important;
-            font-size: 1.6rem !important; color: #ffffff !important; 
+            position: fixed; /* Changed from absolute */
+            bottom: 35px; right: 35px; /* Moved relative to the whole screen */
+            font-family: 'Caveat', cursive !important;
+            font-size: 2.2rem !important; /* Made slightly bigger since it's floating */
+            color: #ffffff !important; 
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.6) !important;
-            pointer-events: none; z-index: 1000;
+            pointer-events: none; z-index: 1000000; /* Ensured it floats above notebook */
             opacity: 0; transform: translateY(10px) rotate(-2deg);
             animation: stanFade 4s ease-in-out forwards;
         }
@@ -228,9 +231,7 @@
             font-family: 'Impact', 'Arial Black', sans-serif;
             font-size: clamp(40px, 8vw, 120px);
             font-weight: 900;
-            /* MUCH more transparent text */
             color: rgba(255, 255, 255, 0.35); 
-            /* Softer text shadows so it blends rather than looking like black blocks */
             text-shadow: 2px 2px 8px rgba(0,0,0,0.6), -1px -1px 5px rgba(0,0,0,0.4);
             z-index: 1000000; pointer-events: none;
             white-space: nowrap;
@@ -324,7 +325,6 @@
     </div>
 
     <div class="notebook">
-        <!-- Added ID to binding for Easter Egg -->
         <div class="binding" id="the-binding"></div>
         <a href="#" class="bookmark-ribbon" onclick="triggerSecretPage(event)" title="Click to reveal hidden contents"></a>
 
@@ -625,13 +625,12 @@
             audio.volume = 0.8;
             audio.play().catch(err => console.log("Audio blocked by browser, might need user interaction first.", err));
 
-            // TEXT OVERLAY ONLY (Image removed)
+            // TEXT OVERLAY ONLY
             const spagText = document.createElement('div');
             spagText.innerText = '"MOMS SPAGHETTI"';
             spagText.className = 'spaghetti-text';
             document.body.appendChild(spagText);
             
-            // Animation lasts 2.2s, so we remove it after 2200ms
             setTimeout(() => {
                 spagText.remove();
             }, 2200);
@@ -642,7 +641,6 @@
         document.getElementById('the-binding').addEventListener('click', () => {
             bindingClicks++;
             if (bindingClicks === 6) {
-                // Toggles the dark theme body class which applies all the dark red & black styling
                 document.body.classList.toggle('dark-theme');
                 console.log("%cLook, if you had one shot, or one opportunity...", "color: #ff4d4d; font-style: italic; font-weight: bold;");
                 bindingClicks = 0; 
@@ -656,14 +654,15 @@
             if (e.key.toLowerCase() === stanCode[stanPosition]) {
                 stanPosition++;
                 if (stanPosition === stanCode.length) {
-                    const activeContent = document.querySelector(`.page.active .content`);
-                    if (activeContent) {
-                        const lyric = document.createElement('div');
-                        lyric.textContent = "My tea's gone cold I'm wondering why...";
-                        lyric.className = 'stan-lyric';
-                        activeContent.appendChild(lyric);
-                        setTimeout(() => lyric.remove(), 4000);
-                    }
+                    
+                    // --- CHANGED: Appends to the document body instead of the active page ---
+                    const lyric = document.createElement('div');
+                    lyric.textContent = "My tea's gone cold I'm wondering why...";
+                    lyric.className = 'stan-lyric';
+                    document.body.appendChild(lyric);
+                    
+                    setTimeout(() => lyric.remove(), 4000);
+                    
                     stanPosition = 0;
                 }
             } else {
