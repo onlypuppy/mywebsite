@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Final project</title>
     
-    <!-- OPTIMIZATION: Preconnect to Google Fonts for faster font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 
-    <!-- OPTIMIZATION: Added 'defer' so the script downloads in the background without blocking the page load -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
 
     <style>
@@ -24,20 +22,23 @@
             margin: 0;
             overflow: hidden;
             position: relative;
+            transition: background 2s ease, background-color 1s ease;
         }
 
-        /* --- OPTIMIZED DYNAMIC BACKGROUND --- */
+        /* --- DYNAMIC BACKGROUND --- */
         .bg-gradient {
             position: fixed; top: -150vh; left: 0; width: 400vw; height: 400vh;
             background: linear-gradient(-45deg, #141e30, #243b55, #2c3e50, #0f2027);
             animation: gradientBg 18s ease infinite; z-index: -2;
             will-change: transform; pointer-events: none;
+            transition: background 1.5s ease;
         }
 
         .bg-grid {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
             background-size: 35px 35px; z-index: -1; pointer-events: none;
+            transition: background-image 1.5s ease;
         }
 
         @keyframes gradientBg {
@@ -95,11 +96,11 @@
         .notebook {
             position: relative; width: 850px; max-width: 85vw; height: 85vh; max-height: 1100px;
             margin-right: 50px; border-radius: 8px 12px 12px 8px; background-color: var(--page6-color); 
-            /* OPTIMIZATION: Hardware accelerate the massive box shadow so it doesn't cause repaint lag */
             transform: translateZ(0);
             box-shadow: 1px 1px 0 #e3d8c1, 2px 2px 0 #c7bca0, 3px 3px 0 #e3d8c1, 4px 4px 0 #c7bca0, 
                         5px 5px 0 #e3d8c1, 6px 6px 0 #c7bca0, 7px 7px 0 #e3d8c1, 8px 8px 0 #c7bca0,
                         15px 15px 25px rgba(0, 0, 0, 0.4);
+            transition: box-shadow 1.5s ease, background-color 1s ease;
         }
 
         /* --- THE CLEAN 3D BINDING --- */
@@ -108,6 +109,7 @@
             border-radius: 8px 0 0 8px; background-color: var(--binding-color);
             background-image: linear-gradient(to right, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.15) 12%, rgba(255,255,255,0.0) 25%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.35) 85%, rgba(0,0,0,0.65) 100%);
             border-right: 1px solid rgba(0, 0, 0, 0.15); box-shadow: 8px 0 16px rgba(49, 43, 32, 0.25), inset 1.5px 0 2px rgba(255, 255, 255, 0.3);
+            cursor: pointer; transition: background-color 1s ease;
         }
         .binding::before {
             content: ''; position: absolute; top: 15px; bottom: 15px; left: 14px; width: 2px;
@@ -120,7 +122,7 @@
             position: absolute; bottom: -35px; left: 80px; width: 20px; height: 60px; background-color: #e63946; z-index: 10; cursor: pointer;
             clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.35));
             will-change: height, bottom, background-color; transform: translateZ(0);
-            transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.3s ease;
+            transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 1s ease;
         }
         .bookmark-ribbon:hover { height: 85px; bottom: -60px; background-color: #ff4d5a; }
 
@@ -137,7 +139,7 @@
         .page {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 8px 12px 12px 8px; display: flex;
             box-shadow: 4px 0 10px rgba(49, 43, 32, 0.15); will-change: clip-path, z-index; backface-visibility: hidden;
-            transform: translate3d(0, 0, 0); transition: transform 0.2s ease-in-out;
+            transform: translate3d(0, 0, 0); transition: transform 0.2s ease-in-out, background-color 1s ease;
         }
         #page-1 { background-color: var(--page1-color); z-index: 20; }
         #page-2 { background-color: var(--page2-color); z-index: 19; }
@@ -152,32 +154,35 @@
             position: absolute; left: calc(100% - 1px); width: 40px; padding: 12px 0; border-radius: 0 10px 10px 0;
             cursor: pointer; display: flex; align-items: center; justify-content: center; background-color: inherit;
             transform-origin: left center; border: 1px solid rgba(49, 43, 32, 0.12); border-left: none; 
-            will-change: transform, filter; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            will-change: transform, filter; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 1s ease;
             box-shadow: 2px 2px 4px rgba(49, 43, 32, 0.12), inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -2px -2px 4px rgba(0, 0, 0, 0.04);
         }
         .page:not(.active) .tab { filter: brightness(0.92) contrast(0.95); transform: translateX(-2px); box-shadow: 1px 1px 3px rgba(49, 43, 32, 0.1), inset -1px -1px 3px rgba(0, 0, 0, 0.05); }
         .page.active .tab { left: calc(100% - 2px); width: 44px; filter: brightness(1); z-index: 10; box-shadow: 4px 3px 8px rgba(49, 43, 32, 0.18), inset 2px 1px 2px rgba(255, 255, 255, 0.7); }
         .tab:hover { filter: brightness(0.98); transform: translateX(2px) !important; }
-        .tab span { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1.15rem; letter-spacing: 1px; color: #3b3324; white-space: nowrap; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); }
+        .tab span { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1.15rem; letter-spacing: 1px; color: #3b3324; white-space: nowrap; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); transition: color 1s ease, text-shadow 1s ease; }
 
         /* --- CONTENT & CLEAN SHADING --- */
         .content {
             padding: var(--grid) 50px var(--grid) 85px; height: 100%; width: 100%; box-sizing: border-box; overflow-y: auto; border-radius: 0 12px 12px 0; 
-            will-change: transform, opacity; backface-visibility: hidden; transform: translate3d(0, 0, 0);
+            will-change: transform, opacity; backface-visibility: hidden; transform: translate3d(0, 0, 0); position: relative;
             background-image: linear-gradient(to right, rgba(0,0,0,0.04) 0%, transparent 10%), repeating-linear-gradient(transparent, transparent calc(var(--grid) - 2px), rgba(0,0,0,0.07) calc(var(--grid) - 2px), rgba(0,0,0,0.07) var(--grid));
             background-size: 100% 100%, 100% var(--grid); background-position: 0 0, 0 32px; 
+            transition: background-image 1s ease;
         }
         #page-7 .content { background-image: linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 10%), repeating-linear-gradient(transparent, transparent calc(var(--grid) - 2px), rgba(212, 175, 55, 0.12) calc(var(--grid) - 2px), rgba(212, 175, 55, 0.12) var(--grid)); }
         #page-7 .content * { color: #e2be5c; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         .content::-webkit-scrollbar { width: 10px; } .content::-webkit-scrollbar-track { background: transparent; } .content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 5px; }
-        .content * { margin: 0; padding: 0; line-height: var(--grid); font-family: 'Times New Roman', Times, serif; color: #312b20; }
+        .content * { margin: 0; padding: 0; line-height: var(--grid); font-family: 'Times New Roman', Times, serif; color: #312b20; transition: color 1s ease; }
+        .content a { color: #1a5ca6; text-decoration: none; border-bottom: 1px dashed #1a5ca6; }
+        .content a:hover { color: #103866; border-bottom-style: solid; }
         .content h1 { font-size: 1.6rem; font-weight: bold; margin-bottom: var(--grid); position: relative; top: -3px; }
         .content h2 { font-size: 1.3rem; font-weight: bold; margin-bottom: var(--grid); position: relative; top: -1px; }
         .content p { font-size: 1.15rem; margin-bottom: var(--grid); }
 
         /* --- INTERACTIVE ANNOTATION UI --- */
         .instruction-text { font-style: italic; color: #666 !important; margin-bottom: 20px; }
-        .skit-divider { border: 0; height: 2px; background-image: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent); margin: 40px 0; }
+        .skit-divider { border: 0; height: 2px; background-image: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent); margin: 40px 0; transition: background-image 1s ease; }
         .skit-block { display: flex; align-items: flex-start; margin-bottom: 20px; position: relative; z-index: 1; }
         .skit-block.show-note { z-index: 10; }
         
@@ -193,16 +198,102 @@
             width: 38%; position: absolute; left: 58%; top: 0; background: #ffffff; border-radius: 8px; padding: 16px;
             box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15); font-family: 'Roboto', Arial, sans-serif !important;
             opacity: 0; visibility: hidden; pointer-events: none; transform: translateX(20px); z-index: 5;
-            will-change: transform, opacity; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            will-change: transform, opacity; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 1s ease, box-shadow 1s ease;
         }
         .skit-note::before {
             content: ''; position: absolute; left: -30px; top: 25px; width: 30px; height: 2px; background-color: #fbbc04;
-            opacity: 0; transform-origin: right; transform: scaleX(0); will-change: transform, opacity; transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0; transform-origin: right; transform: scaleX(0); will-change: transform, opacity; transition: transform 0.4s ease, opacity 0.4s ease, background-color 1s ease;
         }
         .skit-block.show-note .skit-note { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(0); }
         .skit-block.show-note .skit-note::before { opacity: 1; transform: scaleX(1); }
-        .note-header { margin-bottom: 8px; } .note-author-name { font-weight: bold; font-size: 1.05rem; color: #202124 !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
-        .note-body { font-size: 0.95rem; color: #3c4043 !important; line-height: 1.5 !important; margin: 0 !important; }
+        .note-header { margin-bottom: 8px; } .note-author-name { font-weight: bold; font-size: 1.05rem; color: #202124 !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; transition: color 1s ease; }
+        .note-body { font-size: 0.95rem; color: #3c4043 !important; line-height: 1.5 !important; margin: 0 !important; transition: color 1s ease; }
+
+        /* --- EASTER EGG STYLES --- */
+        .stan-lyric {
+            position: absolute; bottom: 15px; right: 25px; font-family: 'Caveat', cursive !important;
+            font-size: 1.6rem !important; color: #ffffff !important; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.6) !important;
+            pointer-events: none; z-index: 1000;
+            opacity: 0; transform: translateY(10px) rotate(-2deg);
+            animation: stanFade 4s ease-in-out forwards;
+        }
+        @keyframes stanFade { 10% { opacity: 1; transform: translateY(0) rotate(-2deg); } 90% { opacity: 1; transform: translateY(0) rotate(-2deg); } 100% { opacity: 0; transform: translateY(-5px) rotate(-2deg); } }
+        
+        .egg-mom { cursor: pointer; position: relative; display: inline-block; font-weight: bold; }
+        
+        /* SPAGHETTI TEXT */
+        .spaghetti-text {
+            position: fixed; top: 50%; left: 50%;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: clamp(40px, 8vw, 120px);
+            font-weight: 900;
+            /* MUCH more transparent text */
+            color: rgba(255, 255, 255, 0.35); 
+            /* Softer text shadows so it blends rather than looking like black blocks */
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6), -1px -1px 5px rgba(0,0,0,0.4);
+            z-index: 1000000; pointer-events: none;
+            white-space: nowrap;
+            will-change: transform, opacity;
+            animation: spaghetTextAnim 2.2s forwards cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        @keyframes spaghetTextAnim {
+            0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            25% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+        }
+
+        /* --- THEME: DARK RED & BLACK OVERRIDES --- */
+        body.dark-theme .bg-gradient {
+            background: linear-gradient(-45deg, #0a0000, #220000, #3a0000, #000000);
+        }
+        body.dark-theme .bg-grid {
+            background-image: linear-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 0, 0.05) 1px, transparent 1px);
+        }
+        body.dark-theme {
+            --page1-color: #1a1a1a;
+            --page2-color: #202020;
+            --page3-color: #252525;
+            --page4-color: #2a2a2a;
+            --page5-color: #2f2f2f;
+            --page6-color: #333333;
+            --binding-color: #4a0000;
+        }
+        body.dark-theme .notebook {
+            box-shadow: 1px 1px 0 #333, 2px 2px 0 #222, 3px 3px 0 #333, 4px 4px 0 #222, 
+                        5px 5px 0 #333, 6px 6px 0 #222, 7px 7px 0 #333, 8px 8px 0 #222,
+                        15px 15px 25px rgba(0, 0, 0, 0.8), 0 0 60px rgba(180, 0, 0, 0.4);
+        }
+        body.dark-theme #page-7 { background-color: #0a0505; }
+        
+        body.dark-theme .content {
+            background-image: linear-gradient(to right, rgba(255,255,255,0.02) 0%, transparent 10%), repeating-linear-gradient(transparent, transparent calc(var(--grid) - 2px), rgba(255,255,255,0.05) calc(var(--grid) - 2px), rgba(255,255,255,0.05) var(--grid));
+        }
+        body.dark-theme .content * { color: #e0e0e0; }
+        body.dark-theme .content a { color: #ff6666; border-bottom-color: #ff6666; }
+        body.dark-theme .content a:hover { color: #ff3333; }
+        body.dark-theme .content h1, body.dark-theme .content h2 { color: #ff4d4d; }
+        body.dark-theme .instruction-text { color: #888888 !important; }
+        
+        body.dark-theme .tab span { color: #e0e0e0; text-shadow: 1px 1px 0 rgba(0,0,0,0.8); }
+        body.dark-theme .tab { border-color: rgba(255,255,255,0.1); box-shadow: 2px 2px 4px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(255,255,255,0.1); }
+        body.dark-theme .page:not(.active) .tab { box-shadow: 1px 1px 3px rgba(0,0,0,0.4), inset -1px -1px 3px rgba(0, 0, 0, 0.2); }
+        body.dark-theme .page.active .tab { box-shadow: 4px 3px 8px rgba(0,0,0,0.6), inset 2px 1px 2px rgba(255, 255, 255, 0.2); }
+
+        body.dark-theme .skit-text { background-color: rgba(80, 20, 20, 0.6); color: #e0e0e0 !important; }
+        body.dark-theme .skit-text:hover { background-color: rgba(120, 20, 20, 0.9); }
+        body.dark-theme .skit-text.active { background-color: #800000; color: #ffffff !important; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+        
+        body.dark-theme .skit-note { background: #1a1a1a; box-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 4px 8px 3px rgba(0,0,0,0.5); }
+        body.dark-theme .skit-note::before { background-color: #ff4d4d; }
+        body.dark-theme .note-author-name { color: #ff4d4d !important; }
+        body.dark-theme .note-body { color: #cccccc !important; }
+
+        body.dark-theme .bookmark-ribbon { background-color: #800000; }
+        body.dark-theme .bookmark-ribbon:hover { background-color: #aa0000; }
+        body.dark-theme .skit-divider { background-image: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent); }
 
         @media (max-width: 768px) {
             .content { padding: var(--grid) 30px var(--grid) 65px; }
@@ -233,7 +324,8 @@
     </div>
 
     <div class="notebook">
-        <div class="binding"></div>
+        <!-- Added ID to binding for Easter Egg -->
+        <div class="binding" id="the-binding"></div>
         <a href="#" class="bookmark-ribbon" onclick="triggerSecretPage(event)" title="Click to reveal hidden contents"></a>
 
         <div class="click-hint" id="click-hint">
@@ -247,7 +339,7 @@
         <div class="page active" id="page-1">
             <div class="content">
                 <h1>1) Biography</h1>
-                <p>Eminem, also known as Marshall Mathers, was born Oct 17, 1972 in St. Joseph Missouri. In the period of that night to today, he’s become a distinguished rapper and music producer. Nowadays recognized as one of the best-selling rappers, and as one of the best selling musical artists in history. He grew up in a broken household, and his parents separated around when Eminem was a year and a half old. Eminem grew up often switching houses, moving between different states, and mainly lived with family members. He grew up in an environment surrounded by poverty, violence, neglect, and drug use. Growing up in that kind of environment he became a victim, succumbing to the use of drugs at a young age. Eminem's album “Relapse” was created to express the idea in his mind of his personal journey through addiction and desperation. Eminem eventually came back into the music scene with this album after after a 5 year hiatus which marked his comeback after fighting with a heavy drug addiction. The way he was brought up contributed to songs spanning over his whole career, consisting of him mentioning his upbringing and how he felt growing up in a situation where he was constantly around drug use, introduced to drugs, and constantly in a violent setting, mentioned in his song “My Mom”.</p>
+                <p>Eminem, also known as Marshall Mathers, was born Oct 17, 1972 in St. Joseph Missouri. In the period of that night to today, he’s become a distinguished rapper and music producer. Nowadays recognized as one of the best-selling rappers, and as one of the best selling musical artists in history. He grew up in a broken household, and his parents separated around when Eminem was a year and a half old. Eminem grew up often switching houses, moving between different states, and mainly lived with family members. He grew up in an environment surrounded by poverty, violence, neglect, and drug use. Growing up in that kind of environment he became a victim, succumbing to the use of drugs at a young age. Eminem's album “Relapse” was created to express the idea in his mind of his personal journey through addiction and desperation. Eminem eventually came back into the music scene with this album after after a 5 year hiatus which marked his comeback after fighting with a heavy drug addiction. The way he was brought up contributed to songs spanning over his whole career, consisting of him mentioning his upbringing and how he felt growing up in a situation where he was constantly around drug use, introduced to drugs, and constantly in a violent setting, mentioned in his song <span class="egg-mom" id="mom-trigger">“My Mom”</span>.</p>
             </div>
             <div class="tab" onclick="bringToFront(1)"><span>Bio</span></div>
         </div>
@@ -381,7 +473,11 @@
     </div>
 
     <script>
-        // OPTIMIZATION: Cache DOM queries so we don't have to search the document on every click
+        // --- EASTER EGG 1: DEV TOOLS ---
+        console.log("%cWill the real Slim Shady please stand up?", "color: #e63946; font-size: 16px; font-weight: bold; font-family: sans-serif;");
+        console.log("%cPrescription: RELAPSE. Patient: Marshall. Attending: Dr. West.", "color: #888; font-size: 10px; font-family: monospace;");
+
+        // OPTIMIZATION: Cache DOM queries
         const allPages = Array.from(document.querySelectorAll('.page'));
         const allSkitBlocks = document.querySelectorAll('.skit-block');
         const hintElement = document.getElementById('click-hint');
@@ -416,7 +512,6 @@
         function toggleAnnotation(clickedBlock) {
             const isActive = clickedBlock.classList.contains('show-note');
             
-            // Loop through cached blocks instead of querying the DOM
             allSkitBlocks.forEach(block => {
                 block.classList.remove('show-note');
                 block.querySelector('.skit-text').classList.remove('active');
@@ -451,7 +546,6 @@
                     const end = Date.now() + duration;
 
                     (function frame() {
-                        // Ensure confetti library has loaded (since we added defer)
                         if (typeof confetti === 'function') {
                             confetti({ particleCount: 12, angle: 60, spread: 80, origin: { x: 0, y: 0.8 }, colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'], zIndex: 100001 });
                             confetti({ particleCount: 12, angle: 120, spread: 80, origin: { x: 1, y: 0.8 }, colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'], zIndex: 100001 });
@@ -497,7 +591,6 @@
             }
 
             setTimeout(() => {
-                // Loop through cached pages
                 allPages.forEach((page) => {
                     const pageIndex = parseInt(page.id.split('-')[1]);
                     
@@ -524,6 +617,59 @@
                 isAnimating = false;
             }, 500);
         }
+
+        // --- EASTER EGG 2: MOM'S SPAGHETTI SOUND ---
+        document.getElementById('mom-trigger').addEventListener('click', function(e) {
+            // PLAY SOUND
+            const audio = new Audio('https://www.myinstants.com/media/sounds/moms-spaghetti.mp3');
+            audio.volume = 0.8;
+            audio.play().catch(err => console.log("Audio blocked by browser, might need user interaction first.", err));
+
+            // TEXT OVERLAY ONLY (Image removed)
+            const spagText = document.createElement('div');
+            spagText.innerText = '"MOMS SPAGHETTI"';
+            spagText.className = 'spaghetti-text';
+            document.body.appendChild(spagText);
+            
+            // Animation lasts 2.2s, so we remove it after 2200ms
+            setTimeout(() => {
+                spagText.remove();
+            }, 2200);
+        });
+
+        // --- EASTER EGG 3: DARK RED & BLACK THEME FLIP ---
+        let bindingClicks = 0;
+        document.getElementById('the-binding').addEventListener('click', () => {
+            bindingClicks++;
+            if (bindingClicks === 6) {
+                // Toggles the dark theme body class which applies all the dark red & black styling
+                document.body.classList.toggle('dark-theme');
+                console.log("%cLook, if you had one shot, or one opportunity...", "color: #ff4d4d; font-style: italic; font-weight: bold;");
+                bindingClicks = 0; 
+            }
+        });
+
+        // --- EASTER EGG 4: "STAN" KEYLOGGER ---
+        let stanCode = ['s', 't', 'a', 'n'];
+        let stanPosition = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === stanCode[stanPosition]) {
+                stanPosition++;
+                if (stanPosition === stanCode.length) {
+                    const activeContent = document.querySelector(`.page.active .content`);
+                    if (activeContent) {
+                        const lyric = document.createElement('div');
+                        lyric.textContent = "My tea's gone cold I'm wondering why...";
+                        lyric.className = 'stan-lyric';
+                        activeContent.appendChild(lyric);
+                        setTimeout(() => lyric.remove(), 4000);
+                    }
+                    stanPosition = 0;
+                }
+            } else {
+                stanPosition = 0;
+            }
+        });
     </script>
 </body>
 </html>
