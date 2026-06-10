@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Final project</title>
     
-    <!-- Added Confetti Library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- OPTIMIZATION: Preconnect to Google Fonts for faster font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
+
+    <!-- OPTIMIZATION: Added 'defer' so the script downloads in the background without blocking the page load -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
 
     <style>
-        /* Import handwritten font for the hint text */
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
-
         /* Base page styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,277 +24,121 @@
             margin: 0;
             overflow: hidden;
             position: relative;
-
-            /* Dynamic Background */
-            background: linear-gradient(-45deg, #141e30, #243b55, #2c3e50, #0f2027);
-            background-size: 400% 400%;
-            animation: gradientBg 18s ease infinite;
         }
 
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-            background-size: 35px 35px;
-            z-index: -1; 
+        /* --- OPTIMIZED DYNAMIC BACKGROUND --- */
+        .bg-gradient {
+            position: fixed; top: -150vh; left: 0; width: 400vw; height: 400vh;
+            background: linear-gradient(-45deg, #141e30, #243b55, #2c3e50, #0f2027);
+            animation: gradientBg 18s ease infinite; z-index: -2;
+            will-change: transform; pointer-events: none;
+        }
+
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 35px 35px; z-index: -1; pointer-events: none;
         }
 
         @keyframes gradientBg {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(-75%, 0, 0); }
+            100% { transform: translate3d(0, 0, 0); }
         }
 
         /* --- SPLASH SCREEN STYLES --- */
         #splash {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #e63946;
-            z-index: 99999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #e63946; z-index: 99999; display: flex;
+            justify-content: center; align-items: center;
+            will-change: transform, opacity;
             animation: removeSplash 0.5s cubic-bezier(0.65, 0, 0.35, 1) 3.5s forwards;
         }
 
         .splash-text {
-            color: #ffffff;
-            font-size: clamp(24px, 4vw, 60px);
-            font-weight: 900;
-            text-align: center;
-            letter-spacing: 2px;
-            padding: 0 40px;
+            color: #ffffff; font-size: clamp(24px, 4vw, 60px); font-weight: 900;
+            text-align: center; letter-spacing: 2px; padding: 0 40px;
             text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            will-change: transform, opacity;
             animation: pulseText 1.2s infinite alternate ease-in-out;
         }
 
-        @keyframes pulseText {
-            0% { transform: scale(0.95); opacity: 0.9; }
-            100% { transform: scale(1.05); opacity: 1; }
-        }
-
-        @keyframes removeSplash {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-100%); visibility: hidden; }
-        }
+        @keyframes pulseText { 0% { transform: scale(0.95); opacity: 0.9; } 100% { transform: scale(1.05); opacity: 1; } }
+        @keyframes removeSplash { 0% { opacity: 1; transform: translate3d(0, 0, 0); } 100% { opacity: 0; transform: translate3d(0, -100%, 0); visibility: hidden; } }
 
         /* --- ACHIEVEMENT POPUP STYLES --- */
         .achievement-popup {
-            position: fixed;
-            top: 25px;
-            right: -400px; 
-            width: 360px;
-            height: 90px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            z-index: 100000;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            box-sizing: border-box;
-            transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            gap: 15px;
+            position: fixed; top: 25px; right: -400px; width: 360px; height: 90px;
+            background: #ffffff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            z-index: 100000; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box;
+            will-change: right; transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); gap: 15px;
         }
 
-        .achievement-popup.show {
-            right: 25px; 
-        }
+        .achievement-popup.show { right: 25px; }
+        .achievement-icon { font-size: 2.5rem; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2)); }
+        .achievement-text-container { display: flex; flex-direction: column; justify-content: center; }
+        .achievement-title { font-size: 0.75rem; font-weight: 800; color: #888; letter-spacing: 1.5px; margin-bottom: 2px; text-transform: uppercase; }
+        .achievement-text { font-size: 1.15rem; font-weight: 900; color: #e63946; letter-spacing: 0.5px; }
+        .achievement-svg-border { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .achievement-svg-border rect { fill: none; stroke: #e63946; stroke-width: 6; stroke-dasharray: 100; stroke-dashoffset: 0; stroke-linecap: round; }
+        .achievement-popup.show .achievement-svg-border rect { animation: timerBorder 2.7s linear forwards; }
+        
+        @keyframes timerBorder { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 100; } }
 
-        .achievement-icon {
-            font-size: 2.5rem;
-            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));
-        }
-
-        .achievement-text-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .achievement-title {
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #888;
-            letter-spacing: 1.5px;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-        }
-
-        .achievement-text {
-            font-size: 1.15rem;
-            font-weight: 900;
-            color: #e63946;
-            letter-spacing: 0.5px;
-        }
-
-        .achievement-svg-border {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-        }
-
-        .achievement-svg-border rect {
-            fill: none;
-            stroke: #e63946;
-            stroke-width: 6;
-            stroke-dasharray: 100;
-            stroke-dashoffset: 0;
-            stroke-linecap: round;
-        }
-
-        .achievement-popup.show .achievement-svg-border rect {
-            animation: timerBorder 2.7s linear forwards;
-        }
-
-        @keyframes timerBorder {
-            0% { stroke-dashoffset: 0; }
-            100% { stroke-dashoffset: 100; }
-        }
-
-        /* Color Palette */
         :root {
-            --page1-color: #fdfbf7;
-            --page2-color: #f6f2e4;
-            --page3-color: #efe8d1;
-            --page4-color: #e5deb8;
-            --page5-color: #dbd2a8;
-            --page6-color: #ceba96;
-            --binding-color: #a49678;
-            --grid: 42px; 
+            --page1-color: #fdfbf7; --page2-color: #f6f2e4; --page3-color: #efe8d1;
+            --page4-color: #e5deb8; --page5-color: #dbd2a8; --page6-color: #ceba96;
+            --binding-color: #a49678; --grid: 42px; 
         }
 
         /* --- THE NOTEBOOK CONTAINER --- */
         .notebook {
-            position: relative;
-            width: 850px; 
-            max-width: 85vw;
-            height: 85vh;
-            max-height: 1100px;
-            margin-right: 50px; 
-            border-radius: 8px 12px 12px 8px; 
-            background-color: var(--page6-color); 
-            
-            box-shadow: 
-                1px 1px 0 #e3d8c1,
-                2px 2px 0 #c7bca0,
-                3px 3px 0 #e3d8c1,
-                4px 4px 0 #c7bca0,
-                5px 5px 0 #e3d8c1,
-                6px 6px 0 #c7bca0,
-                7px 7px 0 #e3d8c1,
-                8px 8px 0 #c7bca0,
-                15px 15px 25px rgba(0, 0, 0, 0.4);
+            position: relative; width: 850px; max-width: 85vw; height: 85vh; max-height: 1100px;
+            margin-right: 50px; border-radius: 8px 12px 12px 8px; background-color: var(--page6-color); 
+            /* OPTIMIZATION: Hardware accelerate the massive box shadow so it doesn't cause repaint lag */
+            transform: translateZ(0);
+            box-shadow: 1px 1px 0 #e3d8c1, 2px 2px 0 #c7bca0, 3px 3px 0 #e3d8c1, 4px 4px 0 #c7bca0, 
+                        5px 5px 0 #e3d8c1, 6px 6px 0 #c7bca0, 7px 7px 0 #e3d8c1, 8px 8px 0 #c7bca0,
+                        15px 15px 25px rgba(0, 0, 0, 0.4);
         }
 
         /* --- THE CLEAN 3D BINDING --- */
         .binding {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 44px;
-            height: 100%;
-            z-index: 100; 
-            border-radius: 8px 0 0 8px;
-            background-color: var(--binding-color);
-            background-image: linear-gradient(
-                to right,
-                rgba(0, 0, 0, 0.35) 0%,
-                rgba(255, 255, 255, 0.15) 12%,
-                rgba(255, 255, 255, 0.0) 25%,
-                rgba(0, 0, 0, 0.1) 60%,
-                rgba(0, 0, 0, 0.35) 85%,
-                rgba(0, 0, 0, 0.65) 100%
-            );
-            border-right: 1px solid rgba(0, 0, 0, 0.15);
-            box-shadow: 
-                8px 0 16px rgba(49, 43, 32, 0.25),
-                inset 1.5px 0 2px rgba(255, 255, 255, 0.3);
+            position: absolute; top: 0; left: 0; width: 44px; height: 100%; z-index: 100; 
+            border-radius: 8px 0 0 8px; background-color: var(--binding-color);
+            background-image: linear-gradient(to right, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.15) 12%, rgba(255,255,255,0.0) 25%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.35) 85%, rgba(0,0,0,0.65) 100%);
+            border-right: 1px solid rgba(0, 0, 0, 0.15); box-shadow: 8px 0 16px rgba(49, 43, 32, 0.25), inset 1.5px 0 2px rgba(255, 255, 255, 0.3);
         }
-
         .binding::before {
-            content: '';
-            position: absolute;
-            top: 15px; 
-            bottom: 15px; 
-            left: 14px;
-            width: 2px;
-            background: repeating-linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0.45) 0px,
-                rgba(255, 255, 255, 0.45) 8px,
-                transparent 8px,
-                transparent 16px
-            );
+            content: ''; position: absolute; top: 15px; bottom: 15px; left: 14px; width: 2px;
+            background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.45) 0px, rgba(255,255,255,0.45) 8px, transparent 8px, transparent 16px);
             border-right: 1px solid rgba(0, 0, 0, 0.12);
         }
 
         /* Interactive Bookmark Ribbon */
         .bookmark-ribbon {
-            position: absolute;
-            bottom: -35px;
-            left: 80px;
-            width: 20px;
-            height: 60px;
-            background-color: #e63946; 
-            z-index: 10; 
-            cursor: pointer;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
-            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.35));
-            transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                        bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-                        background-color 0.3s ease;
+            position: absolute; bottom: -35px; left: 80px; width: 20px; height: 60px; background-color: #e63946; z-index: 10; cursor: pointer;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.35));
+            will-change: height, bottom, background-color; transform: translateZ(0);
+            transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.3s ease;
         }
-
-        .bookmark-ribbon:hover {
-            height: 85px; 
-            bottom: -60px;
-            background-color: #ff4d5a; 
-        }
+        .bookmark-ribbon:hover { height: 85px; bottom: -60px; background-color: #ff4d5a; }
 
         /* --- CLICK ME HINT --- */
         .click-hint {
-            position: absolute;
-            bottom: -50px;
-            left: 78px; 
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            z-index: 100;
-            pointer-events: none; 
-            animation: floatHint 2.5s infinite ease-in-out;
-            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.4));
+            position: absolute; bottom: -50px; left: 78px; display: flex; align-items: center; gap: 6px;
+            z-index: 100; pointer-events: none; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.4));
+            will-change: transform; animation: floatHint 2.5s infinite ease-in-out;
         }
-
-        .click-hint span {
-            color: #ffffff;
-            font-family: 'Caveat', 'Comic Sans MS', cursive;
-            font-size: 1.6rem;
-            transform: rotate(-5deg);
-            margin-top: 5px; 
-            letter-spacing: 1px;
-        }
-
-        @keyframes floatHint {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
+        .click-hint span { color: #ffffff; font-family: 'Caveat', 'Comic Sans MS', cursive; font-size: 1.6rem; transform: rotate(-5deg); margin-top: 5px; letter-spacing: 1px; }
+        @keyframes floatHint { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -5px, 0); } }
 
         /* --- THE PAGES --- */
         .page {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border-radius: 8px 12px 12px 8px; 
-            transition: transform 0.2s ease-in-out;
-            display: flex;
-            box-shadow: 4px 0 10px rgba(49, 43, 32, 0.15);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 8px 12px 12px 8px; display: flex;
+            box-shadow: 4px 0 10px rgba(49, 43, 32, 0.15); will-change: clip-path, z-index; backface-visibility: hidden;
+            transform: translate3d(0, 0, 0); transition: transform 0.2s ease-in-out;
         }
-
         #page-1 { background-color: var(--page1-color); z-index: 20; }
         #page-2 { background-color: var(--page2-color); z-index: 19; }
         #page-3 { background-color: var(--page3-color); z-index: 18; }
@@ -303,279 +149,82 @@
 
         /* --- THE REFINED TABS --- */
         .tab {
-            position: absolute;
-            left: calc(100% - 1px); 
-            width: 40px;  
-            padding: 12px 0; 
-            border-radius: 0 10px 10px 0;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: inherit;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            transform-origin: left center; 
-            border: 1px solid rgba(49, 43, 32, 0.12);
-            border-left: none; 
-            
-            box-shadow: 
-                2px 2px 4px rgba(49, 43, 32, 0.12), 
-                inset 1px 1px 1px rgba(255, 255, 255, 0.5),
-                inset -2px -2px 4px rgba(0, 0, 0, 0.04);
+            position: absolute; left: calc(100% - 1px); width: 40px; padding: 12px 0; border-radius: 0 10px 10px 0;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; background-color: inherit;
+            transform-origin: left center; border: 1px solid rgba(49, 43, 32, 0.12); border-left: none; 
+            will-change: transform, filter; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 2px 2px 4px rgba(49, 43, 32, 0.12), inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -2px -2px 4px rgba(0, 0, 0, 0.04);
         }
-
-        .page:not(.active) .tab {
-            filter: brightness(0.92) contrast(0.95);
-            transform: translateX(-2px);
-            box-shadow: 
-                1px 1px 3px rgba(49, 43, 32, 0.1),
-                inset -1px -1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .page.active .tab {
-            left: calc(100% - 2px); 
-            width: 44px;
-            filter: brightness(1);
-            box-shadow: 
-                4px 3px 8px rgba(49, 43, 32, 0.18), 
-                inset 2px 1px 2px rgba(255, 255, 255, 0.7);
-            z-index: 10;
-        }
-
-        .tab:hover { 
-            filter: brightness(0.98); 
-            transform: translateX(2px) !important; 
-        }
-
-        .tab span {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            transform: rotate(180deg);
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 1.15rem;
-            letter-spacing: 1px;
-            color: #3b3324;
-            white-space: nowrap;
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
-        }
+        .page:not(.active) .tab { filter: brightness(0.92) contrast(0.95); transform: translateX(-2px); box-shadow: 1px 1px 3px rgba(49, 43, 32, 0.1), inset -1px -1px 3px rgba(0, 0, 0, 0.05); }
+        .page.active .tab { left: calc(100% - 2px); width: 44px; filter: brightness(1); z-index: 10; box-shadow: 4px 3px 8px rgba(49, 43, 32, 0.18), inset 2px 1px 2px rgba(255, 255, 255, 0.7); }
+        .tab:hover { filter: brightness(0.98); transform: translateX(2px) !important; }
+        .tab span { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1.15rem; letter-spacing: 1px; color: #3b3324; white-space: nowrap; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); }
 
         /* --- CONTENT & CLEAN SHADING --- */
         .content {
-            padding: var(--grid) 50px var(--grid) 85px; 
-            height: 100%; width: 100%;
-            box-sizing: border-box;
-            overflow-y: auto;
-            border-radius: 0 12px 12px 0; 
-            
-            background-image: 
-                linear-gradient(to right, rgba(0,0,0,0.04) 0%, transparent 10%),
-                repeating-linear-gradient(
-                    transparent, 
-                    transparent calc(var(--grid) - 2px), 
-                    rgba(0,0,0,0.07) calc(var(--grid) - 2px), 
-                    rgba(0,0,0,0.07) var(--grid)
-                );
-            background-size: 100% 100%, 100% var(--grid);
-            background-position: 0 0, 0 32px; 
+            padding: var(--grid) 50px var(--grid) 85px; height: 100%; width: 100%; box-sizing: border-box; overflow-y: auto; border-radius: 0 12px 12px 0; 
+            will-change: transform, opacity; backface-visibility: hidden; transform: translate3d(0, 0, 0);
+            background-image: linear-gradient(to right, rgba(0,0,0,0.04) 0%, transparent 10%), repeating-linear-gradient(transparent, transparent calc(var(--grid) - 2px), rgba(0,0,0,0.07) calc(var(--grid) - 2px), rgba(0,0,0,0.07) var(--grid));
+            background-size: 100% 100%, 100% var(--grid); background-position: 0 0, 0 32px; 
         }
-
-        #page-7 .content {
-            background-image: 
-                linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 10%),
-                repeating-linear-gradient(
-                    transparent, 
-                    transparent calc(var(--grid) - 2px), 
-                    rgba(212, 175, 55, 0.12) calc(var(--grid) - 2px), 
-                    rgba(212, 175, 55, 0.12) var(--grid)
-                );
-        }
-
-        #page-7 .content * {
-            color: #e2be5c;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .content::-webkit-scrollbar { width: 10px; }
-        .content::-webkit-scrollbar-track { background: transparent; }
-        .content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 5px; }
-
-        .content * {
-            margin: 0; padding: 0;
-            line-height: var(--grid); 
-            font-family: 'Times New Roman', Times, serif;
-            color: #312b20;
-        }
-
+        #page-7 .content { background-image: linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 10%), repeating-linear-gradient(transparent, transparent calc(var(--grid) - 2px), rgba(212, 175, 55, 0.12) calc(var(--grid) - 2px), rgba(212, 175, 55, 0.12) var(--grid)); }
+        #page-7 .content * { color: #e2be5c; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .content::-webkit-scrollbar { width: 10px; } .content::-webkit-scrollbar-track { background: transparent; } .content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 5px; }
+        .content * { margin: 0; padding: 0; line-height: var(--grid); font-family: 'Times New Roman', Times, serif; color: #312b20; }
         .content h1 { font-size: 1.6rem; font-weight: bold; margin-bottom: var(--grid); position: relative; top: -3px; }
         .content h2 { font-size: 1.3rem; font-weight: bold; margin-bottom: var(--grid); position: relative; top: -1px; }
         .content p { font-size: 1.15rem; margin-bottom: var(--grid); }
 
-
-        /* --- INTERACTIVE ANNOTATION UI (PAGE 2) --- */
-        .instruction-text {
-            font-style: italic;
-            color: #666 !important;
-            margin-bottom: 20px;
-        }
-
-        .skit-divider {
-            border: 0;
-            height: 2px;
-            background-image: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent);
-            margin: 40px 0;
-        }
-
-        .skit-block {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1; /* Normal state */
-        }
-
-        .skit-block.show-note {
-            z-index: 10; /* Bring active block to front so its absolute note overlaps everything */
-        }
-
+        /* --- INTERACTIVE ANNOTATION UI --- */
+        .instruction-text { font-style: italic; color: #666 !important; margin-bottom: 20px; }
+        .skit-divider { border: 0; height: 2px; background-image: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent); margin: 40px 0; }
+        .skit-block { display: flex; align-items: flex-start; margin-bottom: 20px; position: relative; z-index: 1; }
+        .skit-block.show-note { z-index: 10; }
+        
         .skit-text {
-            width: 55%;
-            padding: 8px 12px;
-            line-height: 1.7 !important; /* Overrides notebook grid to look like a script */
-            font-family: Arial, Helvetica, sans-serif !important;
-            font-size: 1.05rem;
-            color: #202124 !important;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            position: relative;
-            background-color: rgba(253, 236, 170, 0.6); /* Default light yellow highlight */
-            cursor: pointer;
-            box-sizing: border-box;
+            width: 55%; padding: 8px 12px; line-height: 1.7 !important; font-family: Arial, Helvetica, sans-serif !important;
+            font-size: 1.05rem; color: #202124 !important; border-radius: 4px; background-color: rgba(253, 236, 170, 0.6); cursor: pointer; box-sizing: border-box;
+            will-change: background-color, transform; transition: all 0.3s ease; position: relative;
         }
+        .skit-text:hover { background-color: rgba(253, 226, 147, 0.9); transform: translateX(3px); }
+        .skit-text.active { background-color: #fbbc04; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 
-        .skit-text:hover {
-            background-color: rgba(253, 226, 147, 0.9);
-            transform: translateX(3px);
-        }
-
-        .skit-text.active {
-            background-color: #fbbc04; /* Darker Google Docs Orange/Yellow */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-
-        /* --- Google Docs Style Comment Card --- */
         .skit-note {
-            width: 38%;
-            position: absolute; /* Changed to absolute to prevent height gaps */
-            left: 58%; /* Text is 55%, so places it perfectly in the right margin */
-            top: 0;
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
-            font-family: 'Roboto', Arial, sans-serif !important;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none; /* Ignore clicks when invisible */
-            transform: translateX(20px);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 5;
+            width: 38%; position: absolute; left: 58%; top: 0; background: #ffffff; border-radius: 8px; padding: 16px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15); font-family: 'Roboto', Arial, sans-serif !important;
+            opacity: 0; visibility: hidden; pointer-events: none; transform: translateX(20px); z-index: 5;
+            will-change: transform, opacity; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-
-        /* The Connecting Line */
         .skit-note::before {
-            content: '';
-            position: absolute;
-            left: -30px; /* Bridge the gap between text and absolute note */
-            top: 25px;
-            width: 30px;
-            height: 2px;
-            background-color: #fbbc04;
-            opacity: 0;
-            transform-origin: right;
-            transform: scaleX(0);
-            transition: transform 0.4s ease, opacity 0.4s ease;
+            content: ''; position: absolute; left: -30px; top: 25px; width: 30px; height: 2px; background-color: #fbbc04;
+            opacity: 0; transform-origin: right; transform: scaleX(0); will-change: transform, opacity; transition: transform 0.4s ease, opacity 0.4s ease;
         }
-
-        .skit-block.show-note .skit-note {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-            transform: translateX(0);
-        }
-
-        .skit-block.show-note .skit-note::before {
-            opacity: 1;
-            transform: scaleX(1);
-        }
-
-        .note-header {
-            margin-bottom: 8px;
-        }
-
-        .note-author-name {
-            font-weight: bold;
-            font-size: 1.05rem;
-            color: #202124 !important;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-        }
-
-        .note-body {
-            font-size: 0.95rem;
-            color: #3c4043 !important;
-            line-height: 1.5 !important;
-            margin: 0 !important;
-        }
+        .skit-block.show-note .skit-note { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(0); }
+        .skit-block.show-note .skit-note::before { opacity: 1; transform: scaleX(1); }
+        .note-header { margin-bottom: 8px; } .note-author-name { font-weight: bold; font-size: 1.05rem; color: #202124 !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
+        .note-body { font-size: 0.95rem; color: #3c4043 !important; line-height: 1.5 !important; margin: 0 !important; }
 
         @media (max-width: 768px) {
             .content { padding: var(--grid) 30px var(--grid) 65px; }
-            .binding { width: 35px; }
-            .bookmark-ribbon { left: 55px; }
-            .click-hint { left: 53px; }
-            
-            /* Mobile tweaks for absolute annotations */
-            .skit-block { display: block; }
-            .skit-text { width: 100%; margin-bottom: 0; }
-            .skit-note { 
-                position: relative; 
-                left: 0; 
-                top: auto; 
-                width: 100%; 
-                max-height: 0; /* Collapsed state */
-                padding-top: 0;
-                padding-bottom: 0;
-                margin-top: 0;
-                overflow: hidden;
-                opacity: 0;
-                transform: translateY(-10px); 
-                transition: all 0.3s ease; 
-            }
-            .skit-block.show-note .skit-note {
-                max-height: 800px; /* Expanded state */
-                padding-top: 16px;
-                padding-bottom: 16px;
-                margin-top: 10px;
-                opacity: 1;
-                transform: translateY(0);
-            }
-            .skit-note::before { display: none; } /* Hide connecting line on mobile */
+            .binding { width: 35px; } .bookmark-ribbon { left: 55px; } .click-hint { left: 53px; }
+            .skit-block { display: block; } .skit-text { width: 100%; margin-bottom: 0; }
+            .skit-note { position: relative; left: 0; top: auto; width: 100%; max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; overflow: hidden; opacity: 0; transform: translateY(-10px); transition: all 0.3s ease; }
+            .skit-block.show-note .skit-note { max-height: 800px; padding-top: 16px; padding-bottom: 16px; margin-top: 10px; opacity: 1; transform: translateY(0); }
+            .skit-note::before { display: none; } 
         }
     </style>
 </head>
 <body>
 
-    <!-- ANIMATED SPLASH SCREEN -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
     <div id="splash">
-        <div class="splash-text">
-            MAKE SURE TO EITHER FULLSCREEN OR PRESS F11 FOR BEST VIEWING EXPERIENCE
-        </div>
+        <div class="splash-text">MAKE SURE TO EITHER FULLSCREEN OR PRESS F11 FOR BEST VIEWING EXPERIENCE</div>
     </div>
 
-    <!-- ACHIEVEMENT NOTIFICATION BUBBLE -->
     <div id="achievement-popup" class="achievement-popup">
-        <svg class="achievement-svg-border">
-            <rect x="3" y="3" rx="9" ry="9" width="354" height="84" pathLength="100" />
-        </svg>
+        <svg class="achievement-svg-border"><rect x="3" y="3" rx="9" ry="9" width="354" height="84" pathLength="100" /></svg>
         <div class="achievement-icon">🏆</div>
         <div class="achievement-text-container">
             <div class="achievement-title">Achievement Unlocked</div>
@@ -584,14 +233,10 @@
     </div>
 
     <div class="notebook">
-        <!-- THE CLEAN 3D SPINE -->
         <div class="binding"></div>
-
-        <!-- CLICKABLE BOOKMARK RIBBON -->
         <a href="#" class="bookmark-ribbon" onclick="triggerSecretPage(event)" title="Click to reveal hidden contents"></a>
 
-        <!-- CLICK ME HINT WITH ARROW -->
-        <div class="click-hint">
+        <div class="click-hint" id="click-hint">
             <svg width="40" height="25" viewBox="0 0 40 25">
                 <path d="M 40 18 L 20 18 Q 12 18 12 10 L 12 6" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
                 <polygon points="7,8 12,0 17,8" fill="#ffffff"/>
@@ -599,7 +244,6 @@
             <span>click me!</span>
         </div>
 
-        <!-- Page 1 (Initially Active) -->
         <div class="page active" id="page-1">
             <div class="content">
                 <h1>1) Biography</h1>
@@ -608,226 +252,88 @@
             <div class="tab" onclick="bringToFront(1)"><span>Bio</span></div>
         </div>
 
-        <!-- Page 2 (UPDATED WITH ANNOTATIONS) -->
         <div class="page" id="page-2">
             <div class="content">
                 <h2>2) Annotations: Dr. West (Skit)</h2>
                 <p class="instruction-text">Click the highlighted text blocks below to reveal the annotations.</p>
 
-                <!-- Block 1 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        "Morning, Marshall."<br>
-                        "Morning, doc."<br>
-                        "So we're discharging you today, how are you feeling?"<br>
-                        "Ah, anxious."<br>
-                        "Anxiety?"<br>
-                        "Well, anxious to get home, anxious to get back into the world. Nervous."
+                        "Morning, Marshall."<br>"Morning, doc."<br>"So we're discharging you today, how are you feeling?"<br>"Ah, anxious."<br>"Anxiety?"<br>"Well, anxious to get home, anxious to get back into the world. Nervous."
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">This skit begins with a seemingly normal interaction between Eminem and his Doctor, checking on his health and things to go over, as well as how he feels.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">This skit begins with a seemingly normal interaction between Eminem and his Doctor, checking on his health and things to go over, as well as how he feels.</p></div>
                 </div>
 
-                <!-- Block 2 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        "Nervous? C'mon, Marshall, you're a big boy now<br>
-                        You're sounding like a bit of a baby, you can do this<br>
-                        You found a sponsor yet?"
+                        "Nervous? C'mon, Marshall, you're a big boy now<br>You're sounding like a bit of a baby, you can do this<br>You found a sponsor yet?"
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">Here the story becomes more apparent in that this isn't a "normal interaction"—it's something more sinister.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">Here the story becomes more apparent in that this isn't a "normal interaction"—it's something more sinister.</p></div>
                 </div>
 
-                <!-- Block 3 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        "Um, not yet. But I mean, when I get back..."<br>
-                        "Well, if you find one, you find one. If you don't, you don't."<br>
-                        "Well, yeah, I mean I gotta start going to meetings first and... Wait, what?"<br>
-                        "Well, I mean you don't absolutely have to go to meetings<br>
-                        I mean it's not like... a requirement<br>
-                        If they fit into your schedule, I know you're a busy person."<br>
-                        "Well, yeah, but I thought sobriety was the most important thing?"
+                        "Um, not yet. But I mean, when I get back..."<br>"Well, if you find one, you find one. If you don't, you don't."<br>"Well, yeah, I mean I gotta start going to meetings first and... Wait, what?"<br>"Well, I mean you don't absolutely have to go to meetings<br>I mean it's not like... a requirement<br>If they fit into your schedule, I know you're a busy person."<br>"Well, yeah, but I thought sobriety was the most important thing?"
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">Eminem shows that he's actually focused on fixing his addiction here, but the doctor is acting off</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">Eminem shows that he's actually focused on fixing his addiction here, but the doctor is acting off</p></div>
                 </div>
 
-                <!-- Block 4 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        "So what else are you thinking?"<br>
-                        "Um, well, I know I gotta start practicing the steps, and<br>
-                        I mean, learn 'em, and start being able to apply 'em."<br>
-                        "The steps?"<br>
-                        "Yeah, the steps."<br>
-                        "There's a lot of them, aren't there?"<br>
-                        "Well, 12, but–"<br>
-                        "Christ, I don't even know them all."<br>
-                        "Really?"<br>
-                        "Anything else?"
+                        "So what else are you thinking?"<br>"Um, well, I know I gotta start practicing the steps, and<br>I mean, learn 'em, and start being able to apply 'em."<br>"The steps?"<br>"Yeah, the steps."<br>"There's a lot of them, aren't there?"<br>"Well, 12, but–"<br>"Christ, I don't even know them all."<br>"Really?"<br>"Anything else?"
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">It becomes more clear here that Eminem's doctor isn't quite acting normal, as he doesn't even remember the steps for Marshall's rehab assignments, mocking them as if they are something unimportant.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">It becomes more clear here that Eminem's doctor isn't quite acting normal, as he doesn't even remember the steps for Marshall's rehab assignments, mocking them as if they are something unimportant.</p></div>
                 </div>
 
-                <!-- Block 5 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        "Um, well, I mean the only other question I have is, like<br>
-                        What do I do if I find myself in a situation where<br>
-                        Maybe somebody is drinking around me or something like that<br>
-                        And I get tempted to—"<br>
-                        "Take a drink."<br>
-                        "What?"<br>
-                        "Take a drink, and y'know, take the edge off."<br>
-                        "Take the edge off? Man, if I have a drink I already know what that's gonna lead me to."
+                        "Um, well, I mean the only other question I have is, like<br>What do I do if I find myself in a situation where<br>Maybe somebody is drinking around me or something like that<br>And I get tempted to—"<br>"Take a drink."<br>"What?"<br>"Take a drink, and y'know, take the edge off."<br>"Take the edge off? Man, if I have a drink I already know what that's gonna lead me to."
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">Here, we finally find out that there is definitely something wrong with the doctor and Eminem is protesting against what the doctor is saying.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">Here, we finally find out that there is definitely something wrong with the doctor and Eminem is protesting against what the doctor is saying.</p></div>
                 </div>
 
-                <!-- Block 6 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        "What, you mean these?"<br>
-                        "No, what the fuck?!"<br>
-                        "Marshall, what's the matter, darling? Having some doubts, are we? Marshall, you can't leave me, you'll never leave me, Marshall<br>
-                        We'll always be together, Marshall. Marshall? Marshall!!"<br>
-                        "Oh no, no, no! Come on, man!<br>
-                        Oh, fuck you, man!<br>
-                        No, no, no, no!"<br>
-                        "Oh, shit!"
+                        "What, you mean these?"<br>"No, what the fuck?!"<br>"Marshall, what's the matter, darling? Having some doubts, are we? Marshall, you can't leave me, you'll never leave me, Marshall<br>We'll always be together, Marshall. Marshall? Marshall!!"<br>"Oh no, no, no! Come on, man!<br>Oh, fuck you, man!<br>No, no, no, no!"<br>"Oh, shit!"
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">It becomes clear that Eminem realizes his doctor isn't his doctor, and his doctor ends up being his alter ego, slim shady. Eminem reacts accordingly and starts swearing and goes into a panicked frenzy, it's as if all his rehab progress has been flushed down the drain.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">It becomes clear that Eminem realizes his doctor isn't his doctor, and his doctor ends up being his alter ego, slim shady. Eminem reacts accordingly and starts swearing and goes into a panicked frenzy, it's as if all his rehab progress has been flushed down the drain.</p></div>
                 </div>
 
-                <!-- SEPARATOR LINE -->
                 <hr class="skit-divider">
-                
-                <!-- STEVE BERMAN SKIT START -->
                 <h2>Annotations: Steve Berman (Skit)</h2>
                 
-                <!-- Steve Berman Block 1 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        Mr. Berman?<br>
-                        What?<br>
-                        We have Eminem here to see you<br>
-                        About fuckin' time,<br>
-                        send him in<br>
-                        Steve, good to see ya, man<br>
-                        Um, hey, I just w—<br>
-                        Well, look who decided to show his face<br>
-                        I hope you've had fun in the last four years
+                        Mr. Berman?<br>What?<br>We have Eminem here to see you<br>About fuckin' time,<br>send him in<br>Steve, good to see ya, man<br>Um, hey, I just w—<br>Well, look who decided to show his face<br>I hope you've had fun in the last four years
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">This skit starts out with Eminem coming off hiatus, and seeing his promotion and sales "friend" to seemingly talk about two new albums to be released.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">This skit starts out with Eminem coming off hiatus, and seeing his promotion and sales "friend" to seemingly talk about two new albums to be released.</p></div>
                 </div>
 
-                <!-- Steve Berman Block 2 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        Look man, I apologize again<br>
-                        for—<br>
-                        For shooting me?<br>
-                        Do you know I lost the use of my right arm?<br>
-                        Again, it was a mistake, it was a terrible mist—<br>
-                        Are you wearin' a bulletproof vest?
+                        Look man, I apologize again<br>for—<br>For shooting me?<br>Do you know I lost the use of my right arm?<br>Again, it was a mistake, it was a terrible mist—<br>Are you wearin' a bulletproof vest?
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">We find out Eminem shot his musical promoter in times prior to this track, and that his musical promoter is rightfully angry to see him, while also scared, Hence the bulletproof vest. He lost the full use of his right arm, presumably to someone who he trusted. Losing function of any arm halts the normal use of it in everyday life, it changed Steve's life.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">We find out Eminem shot his musical promoter in times prior to this track, and that his musical promoter is rightfully angry to see him, while also scared, Hence the bulletproof vest. He lost the full use of his right arm, presumably to someone who he trusted. Losing function of any arm halts the normal use of it in everyday life, it changed Steve's life.</p></div>
                 </div>
 
-                <!-- Steve Berman Block 3 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        And then you go and do what? Hide out?<br>
-                        Stay in Detroit<br>
-                        for almost five years while the music industry melts the fuck down?<br>
-                        Do you know how many people lost their jobs because of your fuckin' vacation?<br>
-                        Well, that's actually why I'm here<br>
-                        I was gonna put out some new music, and I wanted to play it for you and get your opinion<br>
-                        Do I really need to hear it?<br>
-                        Let me guess, another album about, "Poor me<br>
-                        I'm so famous it has ruined my rich little life<br>
-                        And I'm such a tortured artist, let me make music about it and my tragic love life"<br>
-                        Am I on to somethin' here?
+                        And then you go and do what? Hide out?<br>Stay in Detroit<br>for almost five years while the music industry melts the fuck down?<br>Do you know how many people lost their jobs because of your fuckin' vacation?<br>Well, that's actually why I'm here<br>I was gonna put out some new music, and I wanted to play it for you and get your opinion<br>Do I really need to hear it?<br>Let me guess, another album about, "Poor me<br>I'm so famous it has ruined my rich little life<br>And I'm such a tortured artist, let me make music about it and my tragic love life"<br>Am I on to somethin' here?
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">Steve is angry at Eminem as in his eyes, Marshall hid out for almost 5 years while the music industry was collapsing. Then randomly shows up in his office trying to get his opinion on 2 new albums after those 5 years, assuming from the get go it's about "poor Marshall" and his love life, as well as mocking Eminem's wealth.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">Steve is angry at Eminem as in his eyes, Marshall hid out for almost 5 years while the music industry was collapsing. Then randomly shows up in his office trying to get his opinion on 2 new albums after those 5 years, assuming from the get go it's about "poor Marshall" and his love life, as well as mocking Eminem's wealth.</p></div>
                 </div>
 
-                <!-- Steve Berman Block 4 -->
                 <div class="skit-block" onclick="toggleAnnotation(this)">
                     <div class="skit-text">
-                        Come on, man, it's not like that, it's—<br>
-                        You know what? Just hand the fuckin' thing over, I'm done talkin' to you<br>
-                        Think you can just come and go as you please, big selfish superstar?<br>
-                        Steve, I had a drug problem<br>
-                        "Oh, poor me, I had a drug problem"<br>
-                        Who hasn't had a drug problem in this town?<br>
-                        You know what?<br>
-                        (Hey, hey, hey)<br>
-                        Just lay the shit down on my desk and get the fuck out (Woah, woah)<br>
-                        Woah-woah, Jesus Christ, man, alright, alright, here, fine<br>
-                        What's this shit? Two CDs?<br>
-                        That's what I've been tryin' to tell you, man, there's two albums<br>
-                        Just get out (Alright)<br>
-                        Get the fuck out (Alright, man, see you later)
+                        Come on, man, it's not like that, it's—<br>You know what? Just hand the fuckin' thing over, I'm done talkin' to you<br>Think you can just come and go as you please, big selfish superstar?<br>Steve, I had a drug problem<br>"Oh, poor me, I had a drug problem"<br>Who hasn't had a drug problem in this town?<br>You know what?<br>(Hey, hey, hey)<br>Just lay the shit down on my desk and get the fuck out (Woah, woah)<br>Woah-woah, Jesus Christ, man, alright, alright, here, fine<br>What's this shit? Two CDs?<br>That's what I've been tryin' to tell you, man, there's two albums<br>Just get out (Alright)<br>Get the fuck out (Alright, man, see you later)
                     </div>
-                    <div class="skit-note">
-                        <div class="note-header">
-                            <div class="note-author-name">Aaron Norris</div>
-                        </div>
-                        <p class="note-body">Steve asks for Eminem's albums while ushering him out of his office, calling him a "selfish superstar". Eminem replies accordingly saying "Steve, I had a drug problem" to which Steve says "who hasn't had a drug problem in this town?". He pulls a gun and cocks it, telling Marshall to get out of his office and to leave the CD's.</p>
-                    </div>
+                    <div class="skit-note"><div class="note-header"><div class="note-author-name">Aaron Norris</div></div><p class="note-body">Steve asks for Eminem's albums while ushering him out of his office, calling him a "selfish superstar". Eminem replies accordingly saying "Steve, I had a drug problem" to which Steve says "who hasn't had a drug problem in this town?". He pulls a gun and cocks it, telling Marshall to get out of his office and to leave the CD's.</p></div>
                 </div>
-
-                <br><br><br> <!-- Space for scrolling at bottom so absolute notes don't get cut off -->
+                <br><br><br> 
             </div>
             <div class="tab" onclick="bringToFront(2)"><span>Annotations</span></div>
         </div>
 
-        <!-- Page 3 -->
         <div class="page" id="page-3">
             <div class="content">
                 <h2>3) Creative Connection</h2>
@@ -837,7 +343,6 @@
             <div class="tab" onclick="bringToFront(3)"><span>Creative</span></div>
         </div>
 
-        <!-- Page 4 -->
         <div class="page" id="page-4">
             <div class="content">
                 <h2>4) Music links</h2>
@@ -846,7 +351,6 @@
             <div class="tab" onclick="bringToFront(4)"><span>Links</span></div>
         </div>
 
-        <!-- Page 5 -->
         <div class="page" id="page-5">
             <div class="content">
                 <h2>5) Analysis of Concept Album</h2>
@@ -856,7 +360,6 @@
             <div class="tab" onclick="bringToFront(5)"><span>Analysis</span></div>
         </div>
 
-        <!-- Page 6 -->
         <div class="page" id="page-6">
             <div class="content">
                 <h2>6) List of Works Cited</h2>
@@ -866,7 +369,6 @@
             <div class="tab" onclick="bringToFront(6)"><span>Cited</span></div>
         </div>
 
-        <!-- Secret Page 7 (Secret Archives - No tab element) -->
         <div class="page" id="page-7">
             <div class="content">
                 <h1>The Secret Archives</h1>
@@ -879,26 +381,31 @@
     </div>
 
     <script>
+        // OPTIMIZATION: Cache DOM queries so we don't have to search the document on every click
+        const allPages = Array.from(document.querySelectorAll('.page'));
+        const allSkitBlocks = document.querySelectorAll('.skit-block');
+        const hintElement = document.getElementById('click-hint');
+        const splashElement = document.getElementById('splash');
+        const achievementPopup = document.getElementById('achievement-popup');
+
         // --- SPLASH SCREEN CLEANUP ---
         window.addEventListener('load', () => {
             setTimeout(() => {
-                const splash = document.getElementById('splash');
-                if (splash) splash.remove();
+                if (splashElement) splashElement.remove();
             }, 4200); 
         });
 
-        // --- TAB LAYOUT LOGIC ---
+        // --- OPTIMIZED TAB LAYOUT LOGIC ---
         function layoutTabs() {
-            const tabs = Array.from(document.querySelectorAll('.tab')).filter(tab => {
-                return window.getComputedStyle(tab).display !== 'none';
-            });
+            const tabs = Array.from(document.querySelectorAll('.tab')).filter(tab => tab.offsetParent !== null);
+            const tabHeights = tabs.map(tab => tab.offsetHeight);
             
             let currentTopOffset = 15; 
             const spacingBetweenTabs = 5; 
 
-            tabs.forEach(tab => {
+            tabs.forEach((tab, index) => {
                 tab.style.top = currentTopOffset + 'px';
-                currentTopOffset += tab.offsetHeight + spacingBetweenTabs;
+                currentTopOffset += tabHeights[index] + spacingBetweenTabs;
             });
         }
 
@@ -909,74 +416,50 @@
         function toggleAnnotation(clickedBlock) {
             const isActive = clickedBlock.classList.contains('show-note');
             
-            // First, close all other annotations and reset text highlight colors
-            document.querySelectorAll('.skit-block').forEach(block => {
+            // Loop through cached blocks instead of querying the DOM
+            allSkitBlocks.forEach(block => {
                 block.classList.remove('show-note');
                 block.querySelector('.skit-text').classList.remove('active');
             });
 
-            // If the clicked block wasn't already active, open it
             if (!isActive) {
                 clickedBlock.classList.add('show-note');
                 clickedBlock.querySelector('.skit-text').classList.add('active');
             }
         }
 
-        // --- BOOKMARK SHORTCUT TO SECRET PAGE & ACHIEVEMENT ---
+        // --- BOOKMARK SHORTCUT & CONFETTI ---
         let hasUnlockedAchievement = false;
 
         function triggerSecretPage(event) {
             event.preventDefault();
             bringToFront(7);
             
-            const hint = document.querySelector('.click-hint');
-            if (hint) {
-                hint.style.transition = "opacity 0.5s ease";
-                hint.style.opacity = "0";
-                setTimeout(() => hint.remove(), 500);
+            if (hintElement) {
+                hintElement.style.transition = "opacity 0.5s ease";
+                hintElement.style.opacity = "0";
+                setTimeout(() => hintElement.remove(), 500);
             }
 
             if (!hasUnlockedAchievement) {
                 hasUnlockedAchievement = true;
                 
                 setTimeout(() => {
-                    const popup = document.getElementById('achievement-popup');
-                    popup.classList.add('show');
+                    achievementPopup.classList.add('show');
 
-                    // --- FULL SCREEN CONTINUOUS DUAL-CANNON CONFETTI ---
-                    const duration = 2700; // Match popup timer exactly
+                    const duration = 2700; 
                     const end = Date.now() + duration;
 
                     (function frame() {
-                        // Left Cannon
-                        confetti({
-                            particleCount: 7,
-                            angle: 60,
-                            spread: 80,
-                            origin: { x: 0, y: 0.8 }, 
-                            colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'],
-                            zIndex: 100001
-                        });
-                        // Right Cannon
-                        confetti({
-                            particleCount: 7,
-                            angle: 120,
-                            spread: 80,
-                            origin: { x: 1, y: 0.8 }, 
-                            colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'],
-                            zIndex: 100001
-                        });
-
-                        // Keep going until the 2.7 seconds are up
-                        if (Date.now() < end) {
-                            requestAnimationFrame(frame);
+                        // Ensure confetti library has loaded (since we added defer)
+                        if (typeof confetti === 'function') {
+                            confetti({ particleCount: 12, angle: 60, spread: 80, origin: { x: 0, y: 0.8 }, colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'], zIndex: 100001 });
+                            confetti({ particleCount: 12, angle: 120, spread: 80, origin: { x: 1, y: 0.8 }, colors: ['#e63946', '#ffffff', '#d4af37', '#2c3e50'], zIndex: 100001 });
                         }
+                        if (Date.now() < end) setTimeout(frame, 100); 
                     }());
 
-                    setTimeout(() => {
-                        popup.classList.remove('show');
-                    }, 2700);
-
+                    setTimeout(() => achievementPopup.classList.remove('show'), 2700);
                 }, 400); 
             }
         }
@@ -997,7 +480,7 @@
 
             if (content) {
                 content.style.transition = 'none';
-                content.style.transform = 'translateX(30px)';
+                content.style.transform = 'translate3d(30px, 0, 0)';
                 content.style.opacity = '0';
             }
 
@@ -1009,14 +492,13 @@
 
             if (content) {
                 content.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
-                content.style.transform = 'translateX(0)';
+                content.style.transform = 'translate3d(0, 0, 0)';
                 content.style.opacity = '1';
             }
 
             setTimeout(() => {
-                const pages = Array.from(document.querySelectorAll('.page'));
-                
-                pages.forEach((page) => {
+                // Loop through cached pages
+                allPages.forEach((page) => {
                     const pageIndex = parseInt(page.id.split('-')[1]);
                     
                     if (pageIndex === activeIndex) {
@@ -1043,6 +525,5 @@
             }, 500);
         }
     </script>
-
 </body>
 </html>
