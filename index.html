@@ -169,7 +169,7 @@
         /* --- THE NOTEBOOK CONTAINER --- */
         .notebook {
             position: relative;
-            width: 850px; /* Slightly widened to accommodate side-by-side annotations */
+            width: 850px; 
             max-width: 85vw;
             height: 85vh;
             max-height: 1100px;
@@ -419,12 +419,23 @@
             margin-bottom: 20px;
         }
 
+        .skit-divider {
+            border: 0;
+            height: 2px;
+            background-image: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent);
+            margin: 40px 0;
+        }
+
         .skit-block {
             display: flex;
             align-items: flex-start;
             margin-bottom: 20px;
             position: relative;
-            z-index: 1;
+            z-index: 1; /* Normal state */
+        }
+
+        .skit-block.show-note {
+            z-index: 10; /* Bring active block to front so its absolute note overlaps everything */
         }
 
         .skit-text {
@@ -454,8 +465,10 @@
 
         /* --- Google Docs Style Comment Card --- */
         .skit-note {
-            width: 40%;
-            margin-left: 5%;
+            width: 38%;
+            position: absolute; /* Changed to absolute to prevent height gaps */
+            left: 58%; /* Text is 55%, so places it perfectly in the right margin */
+            top: 0;
             background: #ffffff;
             border-radius: 8px;
             padding: 16px;
@@ -463,16 +476,17 @@
             font-family: 'Roboto', Arial, sans-serif !important;
             opacity: 0;
             visibility: hidden;
+            pointer-events: none; /* Ignore clicks when invisible */
             transform: translateX(20px);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
+            z-index: 5;
         }
 
         /* The Connecting Line */
         .skit-note::before {
             content: '';
             position: absolute;
-            left: -30px; /* Bridge the gap between text and note */
+            left: -30px; /* Bridge the gap between text and absolute note */
             top: 25px;
             width: 30px;
             height: 2px;
@@ -486,6 +500,7 @@
         .skit-block.show-note .skit-note {
             opacity: 1;
             visibility: visible;
+            pointer-events: auto;
             transform: translateX(0);
         }
 
@@ -518,10 +533,31 @@
             .bookmark-ribbon { left: 55px; }
             .click-hint { left: 53px; }
             
-            /* Mobile tweaks for annotations */
-            .skit-block { flex-direction: column; }
-            .skit-text { width: 100%; margin-bottom: 10px; }
-            .skit-note { width: 100%; margin-left: 0; }
+            /* Mobile tweaks for absolute annotations */
+            .skit-block { display: block; }
+            .skit-text { width: 100%; margin-bottom: 0; }
+            .skit-note { 
+                position: relative; 
+                left: 0; 
+                top: auto; 
+                width: 100%; 
+                max-height: 0; /* Collapsed state */
+                padding-top: 0;
+                padding-bottom: 0;
+                margin-top: 0;
+                overflow: hidden;
+                opacity: 0;
+                transform: translateY(-10px); 
+                transition: all 0.3s ease; 
+            }
+            .skit-block.show-note .skit-note {
+                max-height: 800px; /* Expanded state */
+                padding-top: 16px;
+                padding-bottom: 16px;
+                margin-top: 10px;
+                opacity: 1;
+                transform: translateY(0);
+            }
             .skit-note::before { display: none; } /* Hide connecting line on mobile */
         }
     </style>
@@ -692,7 +728,101 @@
                     </div>
                 </div>
 
-                <br><br> <!-- Space for scrolling at bottom -->
+                <!-- SEPARATOR LINE -->
+                <hr class="skit-divider">
+                
+                <!-- STEVE BERMAN SKIT START -->
+                <h2>Annotations: Steve Berman (Skit)</h2>
+                
+                <!-- Steve Berman Block 1 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        Mr. Berman?<br>
+                        What?<br>
+                        We have Eminem here to see you<br>
+                        About fuckin' time,<br>
+                        send him in<br>
+                        Steve, good to see ya, man<br>
+                        Um, hey, I just w—<br>
+                        Well, look who decided to show his face<br>
+                        I hope you've had fun in the last four years
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">This skit starts out with Eminem coming off hiatus, and seeing his promotion and sales "friend" to seemingly talk about two new albums to be released.</p>
+                    </div>
+                </div>
+
+                <!-- Steve Berman Block 2 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        Look man, I apologize again<br>
+                        for—<br>
+                        For shooting me?<br>
+                        Do you know I lost the use of my right arm?<br>
+                        Again, it was a mistake, it was a terrible mist—<br>
+                        Are you wearin' a bulletproof vest?
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">We find out Eminem shot his musical promoter in times prior to this track, and that his musical promoter is rightfully angry to see him, while also scared, Hence the bulletproof vest. He lost the full use of his right arm, presumably to someone who he trusted. Losing function of any arm halts the normal use of it in everyday life, it changed Steve's life.</p>
+                    </div>
+                </div>
+
+                <!-- Steve Berman Block 3 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        And then you go and do what? Hide out?<br>
+                        Stay in Detroit<br>
+                        for almost five years while the music industry melts the fuck down?<br>
+                        Do you know how many people lost their jobs because of your fuckin' vacation?<br>
+                        Well, that's actually why I'm here<br>
+                        I was gonna put out some new music, and I wanted to play it for you and get your opinion<br>
+                        Do I really need to hear it?<br>
+                        Let me guess, another album about, "Poor me<br>
+                        I'm so famous it has ruined my rich little life<br>
+                        And I'm such a tortured artist, let me make music about it and my tragic love life"<br>
+                        Am I on to somethin' here?
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">Steve is angry at Eminem as in his eyes, Marshall hid out for almost 5 years while the music industry was collapsing. Then randomly shows up in his office trying to get his opinion on 2 new albums after those 5 years, assuming from the get go it's about "poor Marshall" and his love life, as well as mocking Eminem's wealth.</p>
+                    </div>
+                </div>
+
+                <!-- Steve Berman Block 4 -->
+                <div class="skit-block" onclick="toggleAnnotation(this)">
+                    <div class="skit-text">
+                        Come on, man, it's not like that, it's—<br>
+                        You know what? Just hand the fuckin' thing over, I'm done talkin' to you<br>
+                        Think you can just come and go as you please, big selfish superstar?<br>
+                        Steve, I had a drug problem<br>
+                        "Oh, poor me, I had a drug problem"<br>
+                        Who hasn't had a drug problem in this town?<br>
+                        You know what?<br>
+                        (Hey, hey, hey)<br>
+                        Just lay the shit down on my desk and get the fuck out (Woah, woah)<br>
+                        Woah-woah, Jesus Christ, man, alright, alright, here, fine<br>
+                        What's this shit? Two CDs?<br>
+                        That's what I've been tryin' to tell you, man, there's two albums<br>
+                        Just get out (Alright)<br>
+                        Get the fuck out (Alright, man, see you later)
+                    </div>
+                    <div class="skit-note">
+                        <div class="note-header">
+                            <div class="note-author-name">Aaron Norris</div>
+                        </div>
+                        <p class="note-body">Steve asks for Eminem's albums while ushering him out of his office, calling him a "selfish superstar". Eminem replies accordingly saying "Steve, I had a drug problem" to which Steve says "who hasn't had a drug problem in this town?". He pulls a gun and cocks it, telling Marshall to get out of his office and to leave the CD's.</p>
+                    </div>
+                </div>
+
+                <br><br><br> <!-- Space for scrolling at bottom so absolute notes don't get cut off -->
             </div>
             <div class="tab" onclick="bringToFront(2)"><span>Annotations</span></div>
         </div>
